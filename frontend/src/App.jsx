@@ -13,10 +13,12 @@ function App() {
   const [nuevoMensaje, setNuevoMensaje] = useState('');
   const [mensajes, setMensajes] = useState([]);
   const [mostrarIconos, SetMostrarIconos] = useState(false);
+  const [nick, setNick] = useState('');
 
   // useEffect para saber si esta conectado y para recibir los mensajes
   useEffect(() => {
     socket.on('connect', () =>SetIsConnected(true));
+    setNick(prompt('Introduce tu nick'));
 
     socket.on('chat_message', (data) => {
       //Añadimos el mensaje al array de mensajes
@@ -33,9 +35,12 @@ function App() {
 const enviarMensaje = () => {
   //El método emit envía un mensaje al servidor
   socket.emit('chat_message', {
-    usuario: socket.id,
+    usuario: nick,
     mensaje: nuevoMensaje
   })
+
+  setNuevoMensaje('')
+
 }
 
   return (
@@ -51,6 +56,7 @@ const enviarMensaje = () => {
 
       <input 
         type="text"
+        value={nuevoMensaje}
         onChange={e=>setNuevoMensaje(e.target.value)}
       />
       <button onClick={enviarMensaje}>Enviar</button>
