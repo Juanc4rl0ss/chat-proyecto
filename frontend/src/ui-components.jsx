@@ -4,7 +4,7 @@ import styled from 'styled-components';
 const ULMensajes = styled.ul`
   list-style-type: none;
   padding: 20px;
-  background: #f5f5f5;
+  background: white;
   border-radius: 10px;
   height: 60vh; 
   width: 80%;
