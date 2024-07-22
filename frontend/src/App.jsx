@@ -3,7 +3,7 @@ import { io } from 'socket.io-client';
 import { useState, useEffect, useRef } from 'react';
 import { LiMensaje, ULMensajes, ULUsuarios } from './ui-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPaperPlane, faSmile } from '@fortawesome/free-solid-svg-icons';
+import { faPaperPlane, faSmile, faMicrophone } from '@fortawesome/free-solid-svg-icons';
 import Picker from '@emoji-mart/react';
 import data from '@emoji-mart/data';
 
@@ -24,6 +24,9 @@ function App() {
   const inputRef = useRef(null); // Crea una referencia para el campo de entrada
   const mensajesRef = useRef(null); // Crea una referencia para el contenedor de mensajes
   const [usuarioIngresado, setUsuarioIngresado] = useState(false); // Estado para manejar si el usuario ya ha sido ingresado
+  const [recording, setRecording] = useState(false); // Estado para manejar la grabación de voz
+  const mediaRecorderRef = useRef(null); // Referencia para el MediaRecorder
+  const [audioChunks, setAudioChunks] = useState([]); // Almacenar los fragmentos de audio
 
   useEffect(() => {
     socket.on('connect', () => setIsConnected(true));
@@ -87,7 +90,8 @@ function App() {
     socket.emit('chat_message', {
       usuario: nick,
       mensaje: nuevoMensaje,
-      fontSize: fontSize
+      fontSize: fontSize,
+      tipo: 'texto' // Añadimos el tipo de mensaje
     });
     setNuevoMensaje('');
   };
@@ -132,6 +136,53 @@ function App() {
     return luminance > 0.5 ? '#000000' : '#FFFFFF';
   };
 
+  const blobToBase64 = (blob) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  };
+
+  const handleAudioStartStop = async () => {
+    if (recording) {
+      console.log('Stopping recording...');
+      // Detener la grabación
+      mediaRecorderRef.current.stop();
+      setRecording(false);
+    } else {
+      console.log('Starting recording...');
+      // Iniciar la grabación
+      navigator.mediaDevices.getUserMedia({ audio: true })
+        .then(stream => {
+          const mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
+          mediaRecorderRef.current = mediaRecorder;
+
+          mediaRecorder.ondataavailable = async (event) => {
+            console.log('Data available:', event.data);
+            if (event.data.size > 0) {
+              const base64AudioMessage = await blobToBase64(event.data);
+              console.log('Audio message length:', base64AudioMessage.length);
+              socket.emit('chat_message', {
+                usuario: nick,
+                mensaje: base64AudioMessage.split(',')[1], // Remove the Data URL part
+                tipo: 'audio'
+              });
+              setAudioChunks([]); // Limpiar los fragmentos de audio después de enviar
+            }
+          };
+
+          mediaRecorder.start();
+          console.log('Recording started');
+          setRecording(true);
+        })
+        .catch(error => {
+          console.error('Error accessing media devices.', error);
+        });
+    }
+  };
+
   return (
     <main className="App">
       <header>
@@ -144,6 +195,10 @@ function App() {
           {mensajes.map((mensaje, index) => {
             const backgroundColor = userColors[mensaje.usuario] || '#0084ff'; // Color predeterminado
             const textColor = getContrastingColor(backgroundColor);
+            console.log(`Rendering message from ${mensaje.usuario}, tipo: ${mensaje.tipo}`);
+            if (mensaje.tipo === 'audio') {
+              console.log(`Audio message length: ${mensaje.mensaje.length}`);
+            }
             return (
               <LiMensaje 
                 key={index} 
@@ -155,7 +210,14 @@ function App() {
                 }}
                 className={mensaje.usuario === nick ? 'own' : ''}
               >
-                {mensaje.usuario}: {mensaje.mensaje}
+                {mensaje.tipo === 'audio' ? (
+                  <audio controls>
+                    <source src={`data:audio/webm;base64,${mensaje.mensaje}`} type="audio/webm" />
+                    Tu navegador no soporta el elemento de audio.
+                  </audio>
+                ) : (
+                  `${mensaje.usuario}: ${mensaje.mensaje}`
+                )}
               </LiMensaje>
             );
           })}
@@ -203,6 +265,10 @@ function App() {
         )}
         <button onClick={enviarMensaje}>
           <FontAwesomeIcon icon={faPaperPlane} className="icon" />
+        </button>
+        <button onClick={handleAudioStartStop}>
+          <FontAwesomeIcon icon={faMicrophone} className="icon" />
+          {recording ? ' Detener' : ' Grabar'}
         </button>
       </div>
     </main>
