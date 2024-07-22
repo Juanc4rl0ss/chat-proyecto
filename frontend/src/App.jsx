@@ -3,7 +3,7 @@ import { io } from 'socket.io-client';
 import { useState, useEffect, useRef } from 'react';
 import { LiMensaje, ULMensajes, ULUsuarios } from './ui-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPaperPlane, faSmile, faMicrophone } from '@fortawesome/free-solid-svg-icons';
+import { faPaperPlane, faSmile, faMicrophone, faImage } from '@fortawesome/free-solid-svg-icons';
 import Picker from '@emoji-mart/react';
 import data from '@emoji-mart/data';
 
@@ -21,17 +21,15 @@ function App() {
   const [showIconPicker, setShowIconPicker] = useState(false);
   const [userColors, setUserColors] = useState({});
   const pickerRef = useRef(null);
-  const inputRef = useRef(null); // Crea una referencia para el campo de entrada
-  const mensajesRef = useRef(null); // Crea una referencia para el contenedor de mensajes
-  const [usuarioIngresado, setUsuarioIngresado] = useState(false); // Estado para manejar si el usuario ya ha sido ingresado
-  const [recording, setRecording] = useState(false); // Estado para manejar la grabación de voz
-  const mediaRecorderRef = useRef(null); // Referencia para el MediaRecorder
-  const [audioChunks, setAudioChunks] = useState([]); // Almacenar los fragmentos de audio
+  const inputRef = useRef(null);
+  const mensajesRef = useRef(null);
+  const [usuarioIngresado, setUsuarioIngresado] = useState(false);
+  const [recording, setRecording] = useState(false);
+  const mediaRecorderRef = useRef(null);
 
   useEffect(() => {
     socket.on('connect', () => setIsConnected(true));
 
-    // Mostrar el prompt solo si el usuario aún no ha sido ingresado
     if (!usuarioIngresado) {
       const usuario = prompt('Introduce tu nick') || 'Anonymous';
       setNick(usuario);
@@ -54,7 +52,6 @@ function App() {
       setUsuarios(userList);
     });
 
-    // Enfocar el campo de entrada después de que el usuario ingrese su nombre
     if (inputRef.current) {
       inputRef.current.focus();
     }
@@ -67,7 +64,6 @@ function App() {
   }, [usuarioIngresado, userColors]);
 
   useEffect(() => {
-    // Desplazar el contenedor de mensajes hacia abajo cuando se actualizan los mensajes
     if (mensajesRef.current) {
       mensajesRef.current.scrollTop = mensajesRef.current.scrollHeight;
     }
@@ -91,7 +87,7 @@ function App() {
       usuario: nick,
       mensaje: nuevoMensaje,
       fontSize: fontSize,
-      tipo: 'texto' // Añadimos el tipo de mensaje
+      tipo: 'texto'
     });
     setNuevoMensaje('');
   };
@@ -100,7 +96,7 @@ function App() {
     setNuevoMensaje(nuevoMensaje + emoji.native);
     setShowIconPicker(false);
     if (inputRef.current) {
-      inputRef.current.focus(); // Enfocar el campo de entrada después de añadir un emoji
+      inputRef.current.focus();
     }
   };
 
@@ -114,7 +110,7 @@ function App() {
     setFontSize(e.target.value);
     setShowSizePicker(false);
     if (inputRef.current) {
-      inputRef.current.focus(); // Enfocar el campo de entrada después de seleccionar el tamaño de fuente
+      inputRef.current.focus();
     }
   };
 
@@ -148,12 +144,10 @@ function App() {
   const handleAudioStartStop = async () => {
     if (recording) {
       console.log('Stopping recording...');
-      // Detener la grabación
       mediaRecorderRef.current.stop();
       setRecording(false);
     } else {
       console.log('Starting recording...');
-      // Iniciar la grabación
       navigator.mediaDevices.getUserMedia({ audio: true })
         .then(stream => {
           const mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
@@ -166,10 +160,9 @@ function App() {
               console.log('Audio message length:', base64AudioMessage.length);
               socket.emit('chat_message', {
                 usuario: nick,
-                mensaje: base64AudioMessage.split(',')[1], // Remove the Data URL part
+                mensaje: base64AudioMessage.split(',')[1],
                 tipo: 'audio'
               });
-              setAudioChunks([]); // Limpiar los fragmentos de audio después de enviar
             }
           };
 
@@ -183,6 +176,18 @@ function App() {
     }
   };
 
+  const handleImageUpload = async (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const base64Image = await blobToBase64(file);
+      socket.emit('chat_message', {
+        usuario: nick,
+        mensaje: base64Image.split(',')[1],
+        tipo: 'imagen'
+      });
+    }
+  };
+
   return (
     <main className="App">
       <header>
@@ -193,12 +198,9 @@ function App() {
       <div className="escritura-usuarios">
         <ULMensajes ref={mensajesRef}>
           {mensajes.map((mensaje, index) => {
-            const backgroundColor = userColors[mensaje.usuario] || '#0084ff'; // Color predeterminado
+            const backgroundColor = userColors[mensaje.usuario] || '#0084ff';
             const textColor = getContrastingColor(backgroundColor);
             console.log(`Rendering message from ${mensaje.usuario}, tipo: ${mensaje.tipo}`);
-            if (mensaje.tipo === 'audio') {
-              console.log(`Audio message length: ${mensaje.mensaje.length}`);
-            }
             return (
               <LiMensaje 
                 key={index} 
@@ -215,6 +217,9 @@ function App() {
                     <source src={`data:audio/webm;base64,${mensaje.mensaje}`} type="audio/webm" />
                     Tu navegador no soporta el elemento de audio.
                   </audio>
+                ) : mensaje.tipo === 'imagen' ? (
+                  <img src={`data:image/jpeg;base64,${mensaje.mensaje}`} alt="imagen enviada" style={{ maxWidth: '200px', maxHeight: '200px' }}
+/>
                 ) : (
                   `${mensaje.usuario}: ${mensaje.mensaje}`
                 )}
@@ -228,7 +233,7 @@ function App() {
             <li 
               key={index} 
               style={{
-                color: userColors[usuario] || '#000000' // Color predeterminado
+                color: userColors[usuario] || '#000000'
               }}
             >
               {usuario}
@@ -251,7 +256,7 @@ function App() {
           value={nuevoMensaje}
           onChange={e => setNuevoMensaje(e.target.value)}
           onKeyPress={handleKeyPress}
-          ref={inputRef} // Asigna la referencia al campo de entrada
+          ref={inputRef}
         />
         <button onClick={() => setShowSizePicker(!showSizePicker)}>Size</button>
         {showSizePicker && (
@@ -266,6 +271,16 @@ function App() {
         <button onClick={enviarMensaje}>
           <FontAwesomeIcon icon={faPaperPlane} className="icon" />
         </button>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleImageUpload}
+          style={{ display: 'none' }}
+          id="image-upload"
+        />
+        <label htmlFor="image-upload">
+          <FontAwesomeIcon icon={faImage} className="icon" />
+        </label>
         <button onClick={handleAudioStartStop}>
           <FontAwesomeIcon icon={faMicrophone} className="icon" />
           {recording ? ' Detener' : ' Grabar'}
