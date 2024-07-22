@@ -4,7 +4,7 @@ import styled from 'styled-components';
 const ULMensajes = styled.ul`
   list-style-type: none;
   padding: 20px;
-  background: white;
+  background: #DAC2C2;
   border-radius: 10px;
   height: 60vh; 
   width: 80%;
@@ -23,6 +23,9 @@ const ULUsuarios = styled.ul`
   height: 60vh;
   border:1px solid #0084ff;
   margin-left:10px;
+  background: white;
+  color:black;
+  font-weight: bold;
 `;
 //Le damos estilos a la etiqueta li
 const LiMensaje = styled.li`
