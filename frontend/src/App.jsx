@@ -6,9 +6,18 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane, faSmile, faMicrophone, faImage } from '@fortawesome/free-solid-svg-icons';
 import Picker from '@emoji-mart/react';
 import data from '@emoji-mart/data';
+import Modal from 'react-modal';
 
 // La constante socket es la que se encarga de la conexión con el servidor
 const socket = io('http://localhost:3000');
+
+Modal.setAppElement('#root'); // Configurar el modal para accesibilidad
+
+// Paleta de colores legibles sobre fondo blanco
+const colorPalette = [
+  '#1F77B4', '#FF7F0E', '#2CA02C', '#D62728', '#9467BD', 
+  '#8C564B', '#E377C2', '#7F7F7F', '#BCBD22', '#17BECF'
+];
 
 function App() {
   const [fontSize, setFontSize] = useState('16px');
@@ -23,19 +32,14 @@ function App() {
   const pickerRef = useRef(null);
   const inputRef = useRef(null);
   const mensajesRef = useRef(null);
-  const [usuarioIngresado, setUsuarioIngresado] = useState(false);
   const [recording, setRecording] = useState(false);
   const mediaRecorderRef = useRef(null);
+  const [modalIsOpen, setModalIsOpen] = useState(true);
+  const [tempNick, setTempNick] = useState('');
+  const modalInputRef = useRef(null); // Referencia para el input del modal
 
   useEffect(() => {
     socket.on('connect', () => setIsConnected(true));
-
-    if (!usuarioIngresado) {
-      const usuario = prompt('Introduce tu nick') || 'Anonymous';
-      setNick(usuario);
-      setUsuarioIngresado(true);
-      socket.emit('new_user', usuario);
-    }
 
     socket.on('chat_message', (data) => {
       setMensajes(mensajes => [...mensajes, data]);
@@ -45,7 +49,7 @@ function App() {
       const newColors = {};
       userList.forEach(user => {
         if (!userColors[user]) {
-          newColors[user] = getRandomColor();
+          newColors[user] = colorPalette[Math.floor(Math.random() * colorPalette.length)];
         }
       });
       setUserColors(colors => ({ ...colors, ...newColors }));
@@ -61,7 +65,7 @@ function App() {
       socket.off('chat_message');
       socket.off('user_list');
     };
-  }, [usuarioIngresado, userColors]);
+  }, [userColors]);
 
   useEffect(() => {
     if (mensajesRef.current) {
@@ -80,6 +84,16 @@ function App() {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [pickerRef]);
+
+  useEffect(() => {
+    if (modalIsOpen) {
+      setTimeout(() => {
+        if (modalInputRef.current) {
+          modalInputRef.current.focus();
+        }
+      }, 100); // Ajuste para asegurar que el input se enfoque correctamente
+    }
+  }, [modalIsOpen]);
 
   const enviarMensaje = () => {
     if (nuevoMensaje === '') return;
@@ -112,24 +126,6 @@ function App() {
     if (inputRef.current) {
       inputRef.current.focus();
     }
-  };
-
-  const getRandomColor = () => {
-    const letters = '0123456789ABCDEF';
-    let color = '#';
-    for (let i = 0; i < 6; i++) {
-      color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-  };
-
-  const getContrastingColor = (color) => {
-    const hex = color.replace('#', '');
-    const r = parseInt(hex.substring(0, 2), 16);
-    const g = parseInt(hex.substring(2, 4), 16);
-    const b = parseInt(hex.substring(4, 6), 16);
-    const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-    return luminance > 0.5 ? '#000000' : '#FFFFFF';
   };
 
   const blobToBase64 = (blob) => {
@@ -188,40 +184,60 @@ function App() {
     }
   };
 
+  const handleSubmitNick = () => {
+    setNick(tempNick || 'Anonymous');
+    socket.emit('new_user', tempNick || 'Anonymous');
+    setModalIsOpen(false);
+  };
+
   return (
     <main className="App">
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={() => setModalIsOpen(false)}
+        contentLabel="Introduce tu nick"
+        className="Modal"
+        overlayClassName="Overlay"
+      >
+        <h2>Introduce tu nick</h2>
+        <input 
+          type="text" 
+          value={tempNick} 
+          onChange={(e) => setTempNick(e.target.value)} 
+          onKeyPress={(e) => e.key === 'Enter' && handleSubmitNick()}
+          ref={modalInputRef} // Referencia al input del modal
+        />
+        <button onClick={handleSubmitNick}>Submit</button>
+      </Modal>
+
       <header>
-        <h2>{isConnected ? 'Conexión establecida' : 'NO CONECTADO'}</h2>
-        <h1>Chat de prueba</h1>
+        <h1 className="titulo">Bienvenidos al chat de Navarra</h1>
       </header>
 
       <div className="escritura-usuarios">
         <ULMensajes ref={mensajesRef}>
           {mensajes.map((mensaje, index) => {
-            const backgroundColor = userColors[mensaje.usuario] || '#0084ff';
-            const textColor = getContrastingColor(backgroundColor);
-            console.log(`Rendering message from ${mensaje.usuario}, tipo: ${mensaje.tipo}`);
+            const userColor = userColors[mensaje.usuario] || colorPalette[Math.floor(Math.random() * colorPalette.length)];
             return (
               <LiMensaje 
                 key={index} 
                 style={{
                   fontSize: mensaje.fontSize,
-                  color: textColor,
-                  backgroundColor: backgroundColor,
+                  backgroundColor: 'white',
+                  color: 'black', // Texto del mensaje en negro
                   alignSelf: mensaje.usuario === nick ? 'flex-end' : 'flex-start'
                 }}
                 className={mensaje.usuario === nick ? 'own' : ''}
               >
-                {mensaje.tipo === 'audio' ? (
+                <span style={{ color: userColor }}>{mensaje.usuario}</span>: {mensaje.tipo === 'audio' ? (
                   <audio controls>
                     <source src={`data:audio/webm;base64,${mensaje.mensaje}`} type="audio/webm" />
                     Tu navegador no soporta el elemento de audio.
                   </audio>
                 ) : mensaje.tipo === 'imagen' ? (
-                  <img src={`data:image/jpeg;base64,${mensaje.mensaje}`} alt="imagen enviada" style={{ maxWidth: '200px', maxHeight: '200px' }}
-/>
+                  <img src={`data:image/jpeg;base64,${mensaje.mensaje}`} alt="imagen enviada" style={{ maxWidth: '200px', maxHeight: '200px' }} />
                 ) : (
-                  `${mensaje.usuario}: ${mensaje.mensaje}`
+                  mensaje.mensaje
                 )}
               </LiMensaje>
             );
@@ -242,7 +258,7 @@ function App() {
         </ULUsuarios>
       </div>
       <div className="escritura-boton">
-        <button onClick={() => setShowIconPicker(!showIconPicker)}>
+        <button onClick={() => setShowIconPicker(!showIconPicker)} className="estilos-boton">
           <FontAwesomeIcon icon={faSmile} className="icon" />
         </button>
         {showIconPicker && (
@@ -258,9 +274,9 @@ function App() {
           onKeyPress={handleKeyPress}
           ref={inputRef}
         />
-        <button onClick={() => setShowSizePicker(!showSizePicker)}>Size</button>
+        <button className="estilos-boton" onClick={() => setShowSizePicker(!showSizePicker)}>Size</button>
         {showSizePicker && (
-          <select onChange={handleFontSizeChange} value={fontSize}>
+          <select onChange={handleFontSizeChange} value={fontSize} className="size-picker">
             <option value="12px">12px</option>
             <option value="14px">14px</option>
             <option value="16px">16px</option>
@@ -268,7 +284,7 @@ function App() {
             <option value="20px">20px</option>
           </select>
         )}
-        <button onClick={enviarMensaje}>
+        <button className="estilos-boton"onClick={enviarMensaje}>
           <FontAwesomeIcon icon={faPaperPlane} className="icon" />
         </button>
         <input
@@ -278,10 +294,10 @@ function App() {
           style={{ display: 'none' }}
           id="image-upload"
         />
-        <label htmlFor="image-upload">
+        <label htmlFor="image-upload" className="estilos-boton">
           <FontAwesomeIcon icon={faImage} className="icon" />
         </label>
-        <button onClick={handleAudioStartStop}>
+        <button className="estilos-boton" onClick={handleAudioStartStop}>
           <FontAwesomeIcon icon={faMicrophone} className="icon" />
           {recording ? ' Detener' : ' Grabar'}
         </button>
