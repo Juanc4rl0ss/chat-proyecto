@@ -3,7 +3,7 @@ import { io } from 'socket.io-client';
 import { useState, useEffect, useRef } from 'react';
 import { LiMensaje, ULMensajes, ULUsuarios } from './ui-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPaperPlane, faSmile, faMicrophone, faImage } from '@fortawesome/free-solid-svg-icons';
+import {  faSmile, faMicrophone, faImage } from '@fortawesome/free-solid-svg-icons';
 import Picker from '@emoji-mart/react';
 import data from '@emoji-mart/data';
 import Modal from 'react-modal';
@@ -22,7 +22,6 @@ const colorPalette = [
 function App() {
   const [fontSize, setFontSize] = useState('16px');
   const [showSizePicker, setShowSizePicker] = useState(false);
-  const [isConnected, setIsConnected] = useState(false);
   const [nuevoMensaje, setNuevoMensaje] = useState('');
   const [mensajes, setMensajes] = useState([]);
   const [nick, setNick] = useState('');
@@ -37,9 +36,10 @@ function App() {
   const [modalIsOpen, setModalIsOpen] = useState(true);
   const [tempNick, setTempNick] = useState('');
   const modalInputRef = useRef(null); // Referencia para el input del modal
+  const [fontFamily, setFontFamily] = useState('Arial');
 
   useEffect(() => {
-    socket.on('connect', () => setIsConnected(true));
+    socket.on('connect');
 
     socket.on('chat_message', (data) => {
       setMensajes(mensajes => [...mensajes, data]);
@@ -100,7 +100,6 @@ function App() {
     socket.emit('chat_message', {
       usuario: nick,
       mensaje: nuevoMensaje,
-      fontSize: fontSize,
       tipo: 'texto'
     });
     setNuevoMensaje('');
@@ -123,6 +122,13 @@ function App() {
   const handleFontSizeChange = (e) => {
     setFontSize(e.target.value);
     setShowSizePicker(false);
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  };
+
+  const handleFontFamily = (e) => {
+    setFontFamily(e.target.value);
     if (inputRef.current) {
       inputRef.current.focus();
     }
@@ -222,7 +228,8 @@ function App() {
               <LiMensaje 
                 key={index} 
                 style={{
-                  fontSize: mensaje.fontSize,
+                  fontSize: fontSize,
+                  fontFamily: fontFamily,
                   backgroundColor: 'white',
                   color: 'black', // Texto del mensaje en negro
                   alignSelf: mensaje.usuario === nick ? 'flex-end' : 'flex-start'
@@ -274,19 +281,33 @@ function App() {
           onKeyPress={handleKeyPress}
           ref={inputRef}
         />
+          <button className="estilos-enviar" onClick={enviarMensaje}>
+            Enviar
+        </button>
         <button className="estilos-boton" onClick={() => setShowSizePicker(!showSizePicker)}>Size</button>
         {showSizePicker && (
-          <select onChange={handleFontSizeChange} value={fontSize} className="size-picker">
-            <option value="12px">12px</option>
-            <option value="14px">14px</option>
-            <option value="16px">16px</option>
-            <option value="18px">18px</option>
-            <option value="20px">20px</option>
-          </select>
+          <div className="contenedor-fuente">
+            <select onChange={handleFontSizeChange} value={fontSize} className="estilos-desplegable">
+              <option value="16px">Elige tamaño:</option>
+              <option value="12px">12px</option>
+              <option value="14px">14px</option>
+              <option value="16px">16px</option>
+              <option value="18px">18px</option>
+              <option value="20px">20px</option>
+            </select>
+          </div>
         )}
-        <button className="estilos-boton"onClick={enviarMensaje}>
-          <FontAwesomeIcon icon={faPaperPlane} className="icon" />
-        </button>
+        <div className="contenedor-fuente">
+          <select onChange={handleFontFamily} value={fontFamily} className="estilos-desplegable">
+            <option value="Arial"><strong>Elige fuente:</strong></option>
+            <option value="Arial">Arial</option>
+            <option value="Verdana">Verdana</option>
+            <option value="Courier New">Courier New</option>
+            <option value="Georgia">Georgia</option>
+            <option value="Comic Sans MS">Comic Sans MS</option>        
+          </select>
+        </div>
+      
         <input
           type="file"
           accept="image/*"
@@ -301,6 +322,7 @@ function App() {
           <FontAwesomeIcon icon={faMicrophone} className="icon" />
           {recording ? ' Detener' : ' Grabar'}
         </button>
+    
       </div>
     </main>
   );

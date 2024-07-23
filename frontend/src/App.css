@@ -40,7 +40,9 @@
 }
 .escritura-boton {
     display: flex;
-    width: 80%;
+    flex-direction:space-between;
+    align-items: center;
+    width: 60%;
     gap: 10px;
     position: relative; /* Ensure the child elements are positioned relative to this container */
   }
@@ -63,7 +65,17 @@
   }
   
   .size-picker {
+    display: block;
     right: 0; /* Position to the right of the container */
+  }
+
+  .contenedor-fuente {
+    display: inline-block;
+    position: relative;
+    
+  }
+  .contenedor-fuente .size-picker {
+    top: 30px;
   }
   
   .icon {
@@ -112,6 +124,7 @@
 }
 
 .estilos-boton {
+  position:relative;
   background: blue;
   color:white;
   padding: 5px 10px;
@@ -119,4 +132,30 @@
   cursor: pointer;
   margin-top: 5px;
   margin-left:10px;
+}
+
+.estilos-enviar {
+  padding:8px;
+}
+
+.estilos-enviar:hover {
+  background:blue;
+  color:white;
+}
+
+.estilos-desplegable {
+  position:relative;
+  background: white;
+  color:black;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 5px;
+  margin-left:10px;
+}
+
+.estilos-font-family {
+  position: relative;
+  top:220px;
+
 }
