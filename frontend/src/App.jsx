@@ -37,6 +37,7 @@ function App() {
   const [tempNick, setTempNick] = useState('');
   const modalInputRef = useRef(null); // Referencia para el input del modal
   const [fontFamily, setFontFamily] = useState('Arial');
+  const [errorNick, setErrorNick] = useState("");
 
   useEffect(() => {
     socket.on('connect');
@@ -56,6 +57,10 @@ function App() {
       setUsuarios(userList);
     });
 
+    socket.on('user_exist', (data) => {
+      setErrorNick(data.mensaje);
+    });
+
     if (inputRef.current) {
       inputRef.current.focus();
     }
@@ -64,6 +69,7 @@ function App() {
       socket.off('connect');
       socket.off('chat_message');
       socket.off('user_list');
+      socket.off('user_exist');
     };
   }, [userColors]);
 
@@ -189,11 +195,20 @@ function App() {
       });
     }
   };
-
   const handleSubmitNick = () => {
-    setNick(tempNick || 'Anonymous');
-    socket.emit('new_user', tempNick || 'Anonymous');
-    setModalIsOpen(false);
+    if (!tempNick) {
+      setErrorNick('El nombre no puede estar vacío');
+      return;
+    }
+    socket.emit('new_user', tempNick, (response) => {
+      if (response.error) {
+        setErrorNick(response.error);
+      } else {
+        setNick(tempNick);
+        setErrorNick('');
+        setModalIsOpen(false);
+      }
+    });
   };
 
   return (
@@ -210,9 +225,10 @@ function App() {
           type="text" 
           value={tempNick} 
           onChange={(e) => setTempNick(e.target.value)} 
-          onKeyPress={(e) => e.key === 'Enter' && handleSubmitNick()}
+          onKeyDown={(e) => e.key === 'Enter' && handleSubmitNick()}
           ref={modalInputRef} // Referencia al input del modal
         />
+        <p style={{ color: 'red' }}>{errorNick}</p>
         <button onClick={handleSubmitNick}>Submit</button>
       </Modal>
 
