@@ -4,12 +4,16 @@ const io = require('socket.io')(server, {
     cors: { origin: '*' }
 });
 
-// Almacena los usuarios conectados en el chat en un array
 let usuarios = [];
+
+let mensajes = [];
 
 // Evento que se dispara cuando un cliente se conecta al servidor
 io.on('connection', (socket) => {
     console.log("Se ha conectado un cliente");
+
+    // Envía el historial de mensajes al cliente que se acaba de conectar
+    socket.emit('chat_history', mensajes.slice(-15));
     
     // Evento que se dispara cuando un cliente se conecta al chat
     socket.on('new_user', (usuario, callback) => {
@@ -38,6 +42,13 @@ io.on('connection', (socket) => {
 
     // Evento que se dispara cuando un cliente envía un mensaje al chat
     socket.on('chat_message', (data) => {
+        // Agrega el mensaje al historial de mensajes
+        mensajes.push(data);
+        if(mensajes > 100){
+            mensajes.shift();
+        }
+
+
         io.emit('chat_message', data);
     });
 

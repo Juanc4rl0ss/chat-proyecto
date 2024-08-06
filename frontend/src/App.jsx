@@ -46,6 +46,10 @@ function App() {
       setMensajes(mensajes => [...mensajes, data]);
     });
 
+    socket.on('chat_history', (history) => {
+      setMensajes(history);
+    });
+
     socket.on('user_list', (userList) => {
       const newColors = {};
       userList.forEach(user => {
@@ -70,6 +74,7 @@ function App() {
       socket.off('chat_message');
       socket.off('user_list');
       socket.off('user_exist');
+      socket.off('chat_history');
     };
   }, [userColors]);
 
