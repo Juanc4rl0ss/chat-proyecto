@@ -44,9 +44,10 @@ io.on('connection', (socket) => {
     socket.on('chat_message', (data) => {
         // Agrega el mensaje al historial de mensajes
         mensajes.push(data);
-        if(mensajes > 100){
+        if (mensajes.length > 100) {
             mensajes.shift();
         }
+        
 
 
         io.emit('chat_message', data);
