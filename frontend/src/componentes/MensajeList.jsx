@@ -1,9 +1,18 @@
+import { useEffect } from 'react';
 import { LiMensaje, ULMensajes, ULUsuarios } from './ui-components';
 
 const MensajeList = ({ mensajes, userColors, colorPalette, fontSize, fontFamily, nick, mensajesRef, usuarios }) => {
+
+  useEffect(() => {
+    // Desplaza la lista de mensajes hacia abajo cuando se actualizan los mensajes
+    if (mensajesRef.current) {
+      mensajesRef.current.scrollTop = mensajesRef.current.scrollHeight;
+    }
+  }, [mensajes]); // Ejecuta este efecto cada vez que 'mensajes' cambie
+
   return (
     <div className="escritura-usuarios">
-       {/* Renderiza la lista de mensajes */}
+      {/* Renderiza la lista de mensajes */}
       <ULMensajes ref={mensajesRef}>
         {mensajes.map((mensaje, index) => {
           const userColor = userColors[mensaje.usuario] || colorPalette[Math.floor(Math.random() * colorPalette.length)];
@@ -39,7 +48,7 @@ const MensajeList = ({ mensajes, userColors, colorPalette, fontSize, fontFamily,
         })}
       </ULMensajes>
 
-        {/* Renderiza la lista de usuarios */}
+      {/* Renderiza la lista de usuarios */}
       <ULUsuarios>
         <h3>Usuarios Conectados</h3>
         {usuarios.map((usuario, index) => (

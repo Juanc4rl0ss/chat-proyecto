@@ -1,12 +1,16 @@
 import './App.css';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import NicknameModal from './componentes/NickModal';
 import EscrituraBoton from './componentes/EscrituraBoton';
 import Modal from 'react-modal';
 import MensajeList from './componentes/MensajeList';
 import UsoDeSockets from './componentes/UsoDeSockets'; // Importa UsoDeSockets
+import io from 'socket.io-client';
+
 
 Modal.setAppElement('#root');
+
+const socket = io('http://localhost:3000');
 
 // Paleta de colores para los usuarios,y que se asignará aleatoriamente
 const colorPalette = [
@@ -23,16 +27,23 @@ function App() {
   const [fontFamily, setFontFamily] = useState('Arial');
   const [showIconPicker, setShowIconPicker] = useState(false);
   const mensajesRef = useRef(null);
+  const inputRef = useRef(null);  // Referencia para el input
 
   // Usa el hook UsoDeSockets
-  const { mensajes, enviarMensaje, usuarios, userColors } = UsoDeSockets(colorPalette);
-
+  const { mensajes, enviarMensaje, usuarios, userColors, handleSubmitNick } = UsoDeSockets(colorPalette);
 
   // Enviar el mensaje con el nick
   const enviarMensajeWrapper = () => {
     enviarMensaje(nick, nuevoMensaje);
     setNuevoMensaje('');
   };
+
+  // Enfocar el input cuando el modal se cierre
+  useEffect(() => {
+    if (!modalIsOpen && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [modalIsOpen]);
 
   return (
     <main className="App">
@@ -58,8 +69,8 @@ function App() {
           mensajesRef={mensajesRef}
           usuarios={usuarios}
         />
-
       </div>
+      
       {/* Renderiza el componente EscrituraBoton */}
       <EscrituraBoton
         showIconPicker={showIconPicker}
@@ -72,6 +83,8 @@ function App() {
         fontFamily={fontFamily}
         setFontFamily={setFontFamily}
         nick={nick}
+        inputRef={inputRef}  // Pasa la referencia del input
+        socket={socket} 
       />
     </main>
   );

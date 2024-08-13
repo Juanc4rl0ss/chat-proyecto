@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSmile, faMicrophone, faImage } from '@fortawesome/free-solid-svg-icons';
 import Picker from '@emoji-mart/react';
@@ -16,13 +16,20 @@ const EscrituraBoton = ({
   fontFamily,
   setFontSize,
   setFontFamily,
-  
 }) => {
+  //Aqui se definen los estados y referencias
   const [showSizePicker, setShowSizePicker] = useState(false);
   const [recording, setRecording] = useState(false);
   const pickerRef = useRef(null);
   const inputRef = useRef(null);
   const mediaRecorderRef = useRef(null);
+
+  // Efecto para enfocar automáticamente el input después de que el nick se ha establecido
+  useEffect(() => {
+    if (nick) {
+      inputRef.current.focus();
+    }
+  }, [nick]);
 
   // Función para enviar el mensaje al servidor
   const handleKeyPress = (event) => {
