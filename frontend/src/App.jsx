@@ -1,7 +1,7 @@
 import './App.css';
 import { useState, useRef, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import NicknameModal from './componentes/NickModal';
+import NicknameModal from './componentes/NickModal/NickModal';
 import EscrituraBoton from './componentes/EscrituraBoton';
 import MensajeList from './componentes/MensajeList';
 import UsoDeSockets from './componentes/UsoDeSockets';
@@ -27,8 +27,12 @@ function App() {
   const mensajesRef = useRef(null);
   const inputRef = useRef(null);
 
-  //Hook empleado para manejar la conexión con el servidor de sockets
-  const { mensajes, enviarMensaje, usuarios, userColors, handleSubmitNick } = UsoDeSockets(colorPalette);
+// Llamamos al hook UsoDeSockets y guardamos el resultado en la variable socketData.
+const socketData = UsoDeSockets(colorPalette);
+
+// Desestructuramos socketData para obtener los valores individuales.
+const { mensajes, enviarMensaje, usuarios, userColors, handleSubmitNick } = socketData;
+
 
   //Función para enviar un mensaje
   const enviarMensajeWrapper = () => {
