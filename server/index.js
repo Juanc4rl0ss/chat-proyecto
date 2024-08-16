@@ -1,11 +1,25 @@
 const http = require('http');
-const server = http.createServer();
-const io = require('socket.io')(server, {
+const express = require('express');
+const socketIo = require('socket.io');
+const cors = require('cors');
+const bodyParser = require('body-parser');
+const nicksRoutes = require('./rutas/nicks'); // Rutas de registro y login
+const db = require('./config/db'); // Conexión a la base de datos
+
+const app = express();
+const server = http.createServer(app);
+const io = socketIo(server, {
     cors: { origin: '*' }
 });
 
-let usuarios = [];
+app.use(cors());
+app.use(bodyParser.json());
 
+// Usa las rutas para registro y login
+app.use('/api/nicks', nicksRoutes); 
+
+// WebSocket logic
+let usuarios = [];
 let mensajes = [];
 
 // Evento que se dispara cuando un cliente se conecta al servidor
@@ -14,7 +28,7 @@ io.on('connection', (socket) => {
 
     // Envía el historial de mensajes al cliente que se acaba de conectar
     socket.emit('chat_history', mensajes.slice(-15));
-    
+
     // Evento que se dispara cuando un cliente se conecta al chat
     socket.on('new_user', (usuario, callback) => {
         // Busca si el usuario ya existe en la lista de usuarios conectados
@@ -47,9 +61,6 @@ io.on('connection', (socket) => {
         if (mensajes.length > 100) {
             mensajes.shift();
         }
-        
-
-
         io.emit('chat_message', data);
     });
 

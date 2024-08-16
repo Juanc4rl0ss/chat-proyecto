@@ -2,6 +2,8 @@ import { useState, useRef, useEffect } from 'react';
 import Modal from 'react-modal';
 import PropTypes from 'prop-types'; // Asegúrate de importar PropTypes
 import './NickModal.css';
+import axios from 'axios';
+
 
 const NicknameModal = ({ isOpen, onSubmit }) => {
   const [tempNick, setTempNick] = useState('');
@@ -22,12 +24,39 @@ const NicknameModal = ({ isOpen, onSubmit }) => {
   }, [isOpen]);
 
   // Función para manejar el envío del nick
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!tempNick) {
       setErrorNick('El nombre no puede estar vacío');
       return;
     }
-    onSubmit(tempNick, setErrorNick);
+    
+    try {
+      let response;
+      if (selectedOption === 'register') {
+        response = await axios.post('/api/nicks/registrar', {
+          apodo: tempNick,
+          contraseña: document.getElementById('password').value,
+          correo: document.getElementById('email').value,
+        });
+      } else if (selectedOption === 'login') {
+        response = await axios.post('/api/nicks/iniciar-sesion', {
+          apodo: tempNick,
+          contraseña: document.getElementById('password').value,
+        });
+      } else if (selectedOption === 'guest') {
+        onSubmit(tempNick);
+        return;
+      }
+
+      if (response.data.error) {
+        setErrorNick(response.data.error);
+      } else {
+        onSubmit(tempNick);
+      }
+    } catch (error) {
+      setErrorNick('Error al conectar con el servidor.');
+      console.error(error);
+    }
   };
 
   return (
@@ -36,6 +65,7 @@ const NicknameModal = ({ isOpen, onSubmit }) => {
       onRequestClose={() => {}}
       contentLabel="Introduce tu nick"
       className="Modal"
+
       overlayClassName="Overlay"
     >
       <button onClick={() => setSelectedOption('register')}>Registrar nick</button>
@@ -49,7 +79,9 @@ const NicknameModal = ({ isOpen, onSubmit }) => {
           <input 
             type="text" 
             id="nick"
-            placeholder='Introduce tu nick'
+            placeholder='Introduce tu nick'       
+            value={tempNick}
+            onChange={(e) => setTempNick(e.target.value)}
             required />
             <label htmlFor="password">Contraseña:</label>
           <input
@@ -57,7 +89,7 @@ const NicknameModal = ({ isOpen, onSubmit }) => {
             id="password"
             placeholder='Introduce tu contraseña'
             required />
-            <label htmlFor="password">Repite la:</label>
+            <label htmlFor="password">Repite la contrsaeña:</label>
           <input
             type="password"
             id="password"

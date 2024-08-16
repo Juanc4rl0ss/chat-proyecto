@@ -12,6 +12,8 @@ const ULMensajes = styled.ul`
   display: flex;
   flex-direction: column; 
   margin-bottom: 20px;
+  border:2px solid #0084ff;
+
 `;
 
 //le damos estilos a la lista de usuarios
@@ -21,7 +23,7 @@ const ULUsuarios = styled.ul`
   background: #f5f5f5;
   border-radius: 10px;
   height: 60vh;
-  border:1px solid #0084ff;
+  border:2px solid #0084ff;
   margin-left:10px;
   background: white;
   color:black;
