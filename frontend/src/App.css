@@ -1,0 +1,161 @@
+.App{
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+  background: rgb(190, 190, 221);
+  position:relative;
+}
+
+.titulo {
+  color:rgb(17, 17, 73);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  border-radius: 10px;
+  background: white;
+  margin-bottom: 20px;
+
+}
+
+.escribir-texto {
+    height: 30px;
+    width: 60%;
+}
+
+.escribir-texto:hover {
+    background:burlywood;
+}
+
+.escritura-usuarios {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 80% ;
+
+
+}
+.escritura-boton {
+    display: flex;
+    flex-direction:space-between;
+    align-items: center;
+    width: 60%;
+    gap: 10px;
+    position: relative; /* Ensure the child elements are positioned relative to this container */
+  }
+  
+  .emoji-picker,
+  .size-picker {
+    position: absolute;
+    top: -220px; /* Adjust as necessary to position above the buttons */
+    z-index: 1000;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+
+  }
+  
+  .emoji-picker {
+    left: 0; /* Position to the left of the container */
+  }
+  
+  .size-picker {
+    display: block;
+    right: 0; /* Position to the right of the container */
+  }
+
+  .contenedor-fuente {
+    display: inline-block;
+    position: relative;
+    
+  }
+  .contenedor-fuente .size-picker {
+    top: 30px;
+  }
+  
+  .icon {
+    cursor: pointer;
+  }
+  
+  .escribir-texto {
+    flex-grow: 1;
+  }
+  
+  button {
+    padding: 5px 10px;
+  }
+
+  /* Estilos para el modal */
+.Modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  right: auto;
+  bottom: auto;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+  background: rgb(185, 179, 179);
+  padding: 30px;
+  border: 3px solid #c21d1d;
+  border-radius: 10px;
+  outline: none;
+  z-index: 1000;
+}
+
+.Modal input:hover {
+  background: burlywood;
+
+}
+
+
+.Overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  z-index: 999;
+}
+
+.estilos-boton {
+  position:relative;
+  background: blue;
+  color:white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 5px;
+  margin-left:10px;
+}
+
+.estilos-enviar {
+  padding:8px;
+}
+
+.estilos-enviar:hover {
+  background:blue;
+  color:white;
+}
+
+.estilos-desplegable {
+  position:relative;
+  background: white;
+  color:black;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 5px;
+  margin-left:10px;
+}
+
+.estilos-font-family {
+  position: relative;
+  top:220px;
+
+}
