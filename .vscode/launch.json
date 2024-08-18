@@ -1,0 +1,35 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Iniciar Chrome para frontend",
+            "url": "http://localhost:5173",
+            "webRoot": "${workspaceFolder}/frontend",
+            "sourceMaps": true,
+            "trace": true
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Iniciar Node.js para backend",
+            "program": "${workspaceFolder}/server/index.js",  // Ajusta esto si `db.js` no es tu punto de entrada
+            "cwd": "${workspaceFolder}/server",
+            "outFiles": ["${workspaceFolder}/server/**/*.js"],
+            "runtimeArgs": [
+                "--nolazy"
+            ],
+            "env": {
+                "NODE_ENV": "development"
+            },
+            "sourceMaps": true
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Depurar Frontend y Backend",
+            "configurations": ["Iniciar Chrome para frontend", "Iniciar Node.js para backend"]
+        }
+    ]
+}

@@ -21,29 +21,36 @@ const NicknameModal = ({ isOpen, onSubmit }) => {
         }
       }, 100);
     }
-  }, [isOpen]);
+    setErrorNick('');
+  }, [isOpen, selectedOption]);
 
   // Función para manejar el envío del nick
   const handleSubmit = async () => {
+    let erroresLogin = '';
+    let erroresRegistro = '';
+    let erroresInvitado = '';
+
     const passPattern = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
     const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
     const nickPattern = /^[a-zA-Z0-9]{3,20}$/;
-    if (!tempNick) {
-      setErrorNick('El nombre no puede estar vacío');
-      return;
-    }
+
     if(selectedOption === 'register' && !nickPattern.test(tempNick)){
-      setErrorNick('El nick debe tener entre 3 y 20 caracteres alfanuméricos');
-      return;
+      erroresRegistro += 'El nick debe tener entre 3 y 20 caracteres y no contener caracteres especiales\n';
+    
     }
     if(selectedOption === 'register' && !passPattern.test(document.getElementById('password').value)){
-      setErrorNick('La contraseña debe tener entre 6 y 20 caracteres, al menos una mayúscula, una minúscula y un número');
-      return;
+      erroresRegistro += 'La contraseña debe tener entre 6 y 20 caracteres, al menos una mayúscula, una minúscula y un número\n';
     }
     if(selectedOption === 'register' && !emailPattern.test(document.getElementById('email').value)){
-      setErrorNick('El email no es válido');
+      erroresRegistro += 'El email no es válido';
+    }
+
+    if(erroresRegistro) {
+      setErrorNick(erroresRegistro);
       return;
     }
+
+
     if(selectedOption === 'register' && document.getElementById('password').value !== document.getElementById('RepeatPassword').value){
     
       setErrorNick('Las contraseñas no coinciden');
@@ -52,13 +59,31 @@ const NicknameModal = ({ isOpen, onSubmit }) => {
     if(selectedOption === 'login'){
       const password = document.getElementById('password').value;
       const nick = tempNick;
+      if (!nick){
+        erroresLogin += 'El nick no puede estar vacío.\n ';
+      }
       if (!password){
-        setErrorNick('La contraseña no puede estar vacía');
-        return;     
+        erroresLogin += 'La contraseña no puede estar vacía. ';
     }
-      if(!nick){
+     if (erroresLogin) {
+    setErrorNick(erroresLogin);
+    return;
+  }
+
+    }
+    if(selectedOption === 'guest'){
+      if (!tempNick){
         setErrorNick('El nick no puede estar vacío');
-        return;   
+        return;
+      }
+
+      if ( tempNick && !nickPattern.test(tempNick)){
+        erroresInvitado = 'El nick debe tener entre 3 y 20 caracteres y no contener caracteres especiales';
+     
+      }
+      if(erroresInvitado){
+        setErrorNick(erroresInvitado); 
+        return;
       }
     }
     

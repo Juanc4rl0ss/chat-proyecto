@@ -15,3 +15,7 @@
     height: 10px;
     width: 150px;
 }
+p {
+    color: red;
+    white-space: pre-line; /* Esto asegura que los \n se interpreten como saltos de línea */
+  }
