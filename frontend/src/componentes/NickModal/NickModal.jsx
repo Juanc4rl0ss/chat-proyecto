@@ -25,8 +25,28 @@ const NicknameModal = ({ isOpen, onSubmit }) => {
 
   // Función para manejar el envío del nick
   const handleSubmit = async () => {
+    const passPattern = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
+    const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+    const nickPattern = /^[a-zA-Z0-9]{3,20}$/;
     if (!tempNick) {
       setErrorNick('El nombre no puede estar vacío');
+      return;
+    }
+    if(selectedOption === 'register' && !nickPattern.test(tempNick)){
+      setErrorNick('El nick debe tener entre 3 y 20 caracteres alfanuméricos');
+      return;
+    }
+    if(selectedOption === 'register' && !passPattern.test(document.getElementById('password').value)){
+      setErrorNick('La contraseña debe tener entre 6 y 20 caracteres, al menos una mayúscula, una minúscula y un número');
+      return;
+    }
+    if(selectedOption === 'register' && !emailPattern.test(document.getElementById('email').value)){
+      setErrorNick('El email no es válido');
+      return;
+    }
+    if(selectedOption === 'register' && document.getElementById('password').value !== document.getElementById('RepeatPassword').value){
+    
+      setErrorNick('Las contraseñas no coinciden');
       return;
     }
     
@@ -34,13 +54,13 @@ const NicknameModal = ({ isOpen, onSubmit }) => {
       let response;
       if (selectedOption === 'register') {
         response = await axios.post('/api/nicks/registrar', {
-          apodo: tempNick,
+          nickname: tempNick,
           contraseña: document.getElementById('password').value,
           correo: document.getElementById('email').value,
         });
       } else if (selectedOption === 'login') {
         response = await axios.post('/api/nicks/iniciar-sesion', {
-          apodo: tempNick,
+          nickname: tempNick,
           contraseña: document.getElementById('password').value,
         });
       } else if (selectedOption === 'guest') {
@@ -89,10 +109,10 @@ const NicknameModal = ({ isOpen, onSubmit }) => {
             id="password"
             placeholder='Introduce tu contraseña'
             required />
-            <label htmlFor="password">Repite la contrsaeña:</label>
+            <label htmlFor="password">Repite la contraseña:</label>
           <input
             type="password"
-            id="password"
+            id="RepeatPassword"
             placeholder='Introduce tu contraseña'
             required />
           <label htmlFor="email">Introduzca un email:</label>
@@ -111,6 +131,8 @@ const NicknameModal = ({ isOpen, onSubmit }) => {
           <input 
             type="text" 
             id="nick"
+            value={tempNick}
+            onChange={(e) => setTempNick(e.target.value)}
             placeholder='Introduce tu nick'
             required/>
 
