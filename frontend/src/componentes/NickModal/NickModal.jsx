@@ -49,6 +49,18 @@ const NicknameModal = ({ isOpen, onSubmit }) => {
       setErrorNick('Las contraseñas no coinciden');
       return;
     }
+    if(selectedOption === 'login'){
+      const password = document.getElementById('password').value;
+      const nick = tempNick;
+      if (!password){
+        setErrorNick('La contraseña no puede estar vacía');
+        return;     
+    }
+      if(!nick){
+        setErrorNick('El nick no puede estar vacío');
+        return;   
+      }
+    }
     
     try {
       let response;
