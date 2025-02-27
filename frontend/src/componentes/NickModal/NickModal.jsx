@@ -3,7 +3,7 @@ import Modal from 'react-modal';
 import PropTypes from 'prop-types';
 import './NickModal.css';
 import axios from 'axios';
-import logo from '../../img/logo-chat.webp';
+import logo from '../../../public/img/logo-chat.webp';
 
 const NicknameModal = ({ isOpen, onSubmit }) => {
   const [tempNick, setTempNick] = useState('');
@@ -162,7 +162,6 @@ const NicknameModal = ({ isOpen, onSubmit }) => {
           <img src={logo} alt="Logo Chat" className="logo" />
         </div>
       )}
-
 
       {selectedOption === 'register' && (
         <form className='formulario'>

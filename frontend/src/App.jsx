@@ -1,10 +1,10 @@
 import './App.css';
 import { useState, useRef, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router-dom';
 import NicknameModal from './componentes/NickModal/NickModal';
-import EscrituraBoton from './componentes/EscrituraBoton';
-import MensajeList from './componentes/MensajeList';
-import UsoDeSockets from './componentes/UsoDeSockets';
+import EscrituraBoton from './componentes/SalaChat/ChatControls/EscrituraBoton';
+import MensajeList from './componentes/SalaChat/ChatDisplay/MensajeList';
+import UsoDeSockets from './componentes/Sockets/UsoDeSockets';
 import Modal from 'react-modal';
 import io from 'socket.io-client';
 
@@ -57,18 +57,16 @@ function App() {
               onSubmit={(tempNick, setErrorNick) => handleSubmitNick(tempNick, setNick, setErrorNick, setModalIsOpen)}
             />
 
-            <div className="escritura-usuarios">
-              <MensajeList
-                mensajes={mensajes}
-                userColors={userColors}
-                colorPalette={colorPalette}
-                fontSize={fontSize}
-                fontFamily={fontFamily}
-                nick={nick}
-                mensajesRef={mensajesRef}
-                usuarios={usuarios}
-              />
-            </div>
+            <MensajeList
+              mensajes={mensajes}
+              userColors={userColors}
+              colorPalette={colorPalette}
+              fontSize={fontSize}
+              fontFamily={fontFamily}
+              nick={nick}
+              mensajesRef={mensajesRef}
+              usuarios={usuarios}
+            />
 
             <EscrituraBoton
               showIconPicker={showIconPicker}

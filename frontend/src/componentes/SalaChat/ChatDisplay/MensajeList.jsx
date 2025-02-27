@@ -1,8 +1,7 @@
 import { useEffect } from 'react';
-import { LiMensaje, ULMensajes, ULUsuarios } from './ui-components';
+import './MensajeList.css'; // Importamos el archivo CSS
 
 const MensajeList = ({ mensajes, userColors, colorPalette, fontSize, fontFamily, nick, mensajesRef, usuarios }) => {
-
   useEffect(() => {
     // Desplaza la lista de mensajes hacia abajo cuando se actualizan los mensajes
     if (mensajesRef.current) {
@@ -13,22 +12,19 @@ const MensajeList = ({ mensajes, userColors, colorPalette, fontSize, fontFamily,
   return (
     <div className="escritura-usuarios">
       {/* Renderiza la lista de mensajes */}
-      <ULMensajes ref={mensajesRef}>
+      <ul className="ul-mensajes" ref={mensajesRef}>
         {mensajes.map((mensaje, index) => {
+          // Mantener el color de usuario igual que antes
           const userColor = userColors[mensaje.usuario] || colorPalette[Math.floor(Math.random() * colorPalette.length)];
+          
           return (
-
-            // Renderiza un mensaje con su respectivo estilo y contenido
-            <LiMensaje
+            <li
               key={index}
+              className={`li-mensaje ${mensaje.usuario === nick ? 'own' : ''}`}
               style={{
                 fontSize: fontSize,
                 fontFamily: fontFamily,
-                backgroundColor: 'white',
-                color: 'black',
-                alignSelf: mensaje.usuario === nick ? 'flex-end' : 'flex-start',
               }}
-              className={mensaje.usuario === nick ? 'own' : ''}
             >
               <span style={{ color: userColor }}>{mensaje.usuario}</span>:{' '}
               {mensaje.tipo === 'audio' ? (
@@ -45,13 +41,13 @@ const MensajeList = ({ mensajes, userColors, colorPalette, fontSize, fontFamily,
               ) : (
                 mensaje.mensaje
               )}
-            </LiMensaje>
+            </li>
           );
         })}
-      </ULMensajes>
+      </ul>
 
       {/* Renderiza la lista de usuarios */}
-      <ULUsuarios>
+      <ul className="ul-usuarios">
         <h3>Usuarios Conectados</h3>
         {usuarios.map((usuario, index) => (
           <li
@@ -63,7 +59,7 @@ const MensajeList = ({ mensajes, userColors, colorPalette, fontSize, fontFamily,
             {usuario}
           </li>
         ))}
-      </ULUsuarios>
+      </ul>
     </div>
   );
 };
