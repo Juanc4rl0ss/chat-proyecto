@@ -1,3 +1,6 @@
+let usuarios = []; // Inicialmente vacío
+module.exports = { usuarios }; // Exportamos el objeto antes de llenarlo
+
 const http = require('http');
 const express = require('express');
 const socketIo = require('socket.io');
@@ -16,10 +19,9 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // Usa las rutas para registro y login
-app.use('/api/nicks', nicksRoutes); 
+app.use('/api/nicks', nicksRoutes);
 
 // WebSocket logic
-let usuarios = [];
 let mensajes = [];
 
 // Evento que se dispara cuando un cliente se conecta al servidor

@@ -17,6 +17,8 @@ const MensajeList = ({ mensajes, userColors, colorPalette, fontSize, fontFamily,
         {mensajes.map((mensaje, index) => {
           const userColor = userColors[mensaje.usuario] || colorPalette[Math.floor(Math.random() * colorPalette.length)];
           return (
+
+            // Renderiza un mensaje con su respectivo estilo y contenido
             <LiMensaje
               key={index}
               style={{
@@ -52,8 +54,8 @@ const MensajeList = ({ mensajes, userColors, colorPalette, fontSize, fontFamily,
       <ULUsuarios>
         <h3>Usuarios Conectados</h3>
         {usuarios.map((usuario, index) => (
-          <li 
-            key={index} 
+          <li
+            key={index}
             style={{
               color: userColors[usuario] || '#000000'
             }}
