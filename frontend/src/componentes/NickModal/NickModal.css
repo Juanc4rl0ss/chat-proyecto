@@ -1,13 +1,21 @@
+.Modal {
+    width: 450px;
+    height: 460px;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
 .formulario {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     margin-top: 10%;
-    padding:10px;
-    
+    padding: 10px;
+
 }
-.formulario input{
+
+.formulario input {
     margin: 5px;
     padding: 5px;
     border-radius: 5px;
@@ -15,7 +23,86 @@
     height: 10px;
     width: 150px;
 }
+
 p {
     color: red;
-    white-space: pre-line; /* Esto asegura que los \n se interpreten como saltos de línea */
-  }
+    white-space: pre-line;
+}
+
+.botones-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.submit-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-top: 15px;
+}
+
+button {
+    padding: 10px 20px;
+    border-radius: 5px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    width: 150px;
+    text-align: center;
+}
+
+.logo-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 80%;
+    text-align: center;
+}
+
+.logo-container h2 {
+    font-size: 24px;
+    margin-bottom: 15px;
+}
+
+.logo {
+    width: 150px;
+    height: auto;
+}
+
+/* 📌 Asegurar que fieldset esté bien alineado */
+fieldset {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 100%;
+    max-width: 300px;
+}
+
+/* 📌 Estilo del legend para que no se vea pegado */
+legend {
+    font-size: 18px;
+    font-weight: bold;
+    padding: 0 10px;
+    text-align: center;
+}
+
+.formulario input {
+    margin: 8px 0;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 100%;
+    max-width: 250px;
+}

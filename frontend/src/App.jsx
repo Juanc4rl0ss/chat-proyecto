@@ -27,11 +27,11 @@ function App() {
   const mensajesRef = useRef(null);
   const inputRef = useRef(null);
 
-// Llamamos al hook UsoDeSockets y guardamos el resultado en la variable socketData.
-const socketData = UsoDeSockets(colorPalette);
+  // Llamamos al hook UsoDeSockets y guardamos el resultado en la variable socketData.
+  const socketData = UsoDeSockets(colorPalette);
 
-// Desestructuramos socketData para obtener los valores individuales.
-const { mensajes, enviarMensaje, usuarios, userColors, handleSubmitNick } = socketData;
+  // Desestructuramos socketData para obtener los valores individuales.
+  const { mensajes, enviarMensaje, usuarios, userColors, handleSubmitNick } = socketData;
 
 
   //Función para enviar un mensaje
@@ -50,48 +50,45 @@ const { mensajes, enviarMensaje, usuarios, userColors, handleSubmitNick } = sock
   return (
     <Router>
       <main className="App">
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <>
-                <NicknameModal 
-                  isOpen={modalIsOpen} 
-                  onSubmit={(tempNick, setErrorNick) => handleSubmitNick(tempNick, setNick, setErrorNick, setModalIsOpen)} 
-                />
+        {
+          <>
+            <NicknameModal
+              isOpen={modalIsOpen}
+              onSubmit={(tempNick, setErrorNick) => handleSubmitNick(tempNick, setNick, setErrorNick, setModalIsOpen)}
+            />
 
-                <div className="escritura-usuarios">
-                  <MensajeList
-                    mensajes={mensajes}
-                    userColors={userColors}
-                    colorPalette={colorPalette}
-                    fontSize={fontSize}
-                    fontFamily={fontFamily}
-                    nick={nick}
-                    mensajesRef={mensajesRef}
-                    usuarios={usuarios}
-                  />
-                </div>
+            <div className="escritura-usuarios">
+              <MensajeList
+                mensajes={mensajes}
+                userColors={userColors}
+                colorPalette={colorPalette}
+                fontSize={fontSize}
+                fontFamily={fontFamily}
+                nick={nick}
+                mensajesRef={mensajesRef}
+                usuarios={usuarios}
+              />
+            </div>
 
-                <EscrituraBoton
-                  showIconPicker={showIconPicker}
-                  setShowIconPicker={setShowIconPicker}
-                  nuevoMensaje={nuevoMensaje}
-                  setNuevoMensaje={setNuevoMensaje}
-                  enviarMensaje={enviarMensajeWrapper}
-                  fontSize={fontSize}
-                  setFontSize={setFontSize}
-                  fontFamily={fontFamily}
-                  setFontFamily={setFontFamily}
-                  nick={nick}
-                  inputRef={inputRef}
-                  socket={socket}
-                />
-              </>
-            }
-          />
-       
-        </Routes>
+            <EscrituraBoton
+              showIconPicker={showIconPicker}
+              setShowIconPicker={setShowIconPicker}
+              nuevoMensaje={nuevoMensaje}
+              setNuevoMensaje={setNuevoMensaje}
+              enviarMensaje={enviarMensajeWrapper}
+              fontSize={fontSize}
+              setFontSize={setFontSize}
+              fontFamily={fontFamily}
+              setFontFamily={setFontFamily}
+              nick={nick}
+              inputRef={inputRef}
+              socket={socket}
+            />
+          </>
+        }
+
+
+
       </main>
     </Router>
   );

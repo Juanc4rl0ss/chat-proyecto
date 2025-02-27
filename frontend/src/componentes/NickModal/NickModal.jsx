@@ -1,7 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import Modal from 'react-modal';
+import PropTypes from 'prop-types';
 import './NickModal.css';
 import axios from 'axios';
+import logo from '../../img/logo-chat.webp';
 
 const NicknameModal = ({ isOpen, onSubmit }) => {
   const [tempNick, setTempNick] = useState('');
@@ -67,7 +69,7 @@ const NicknameModal = ({ isOpen, onSubmit }) => {
         setErrorNick(erroresLogin);
         return;
       }
-      if(response.data.enUso){
+      if (response.data.enUso) {
         setErrorNick('Este nick está en uso.');
       }
     }
@@ -85,6 +87,10 @@ const NicknameModal = ({ isOpen, onSubmit }) => {
           return;
         }
       } else if (response.data.enUso) {
+        if (selectedOption === 'guest') {
+          setErrorNick('Este nick ya está en uso. Elige otro.');
+          return;
+        }
         setErrorNick('Este nick ya está en uso. Elige otro.');
         return;
       }
@@ -144,82 +150,82 @@ const NicknameModal = ({ isOpen, onSubmit }) => {
       className="Modal"
       overlayClassName="Overlay"
     >
-      <button onClick={() => setSelectedOption('register')}>Registrar nick</button>
-      <button onClick={() => setSelectedOption('login')}>Loguear nick</button>
-      <button onClick={() => setSelectedOption('guest')}>Entrar como invitado</button>
+      <div className="botones-container">
+        <button onClick={() => setSelectedOption('register')}>Registrar nick</button>
+        <button onClick={() => setSelectedOption('login')}>Loguear nick</button>
+        <button onClick={() => setSelectedOption('guest')}>Invitado</button>
+      </div>
+
+      {!selectedOption && (
+        <div className="logo-container">
+          <h2>Bienvenidos al chat web</h2>
+          <img src={logo} alt="Logo Chat" className="logo" />
+        </div>
+      )}
+
 
       {selectedOption === 'register' && (
         <form className='formulario'>
-          <h2>Registrar nuevo nick:</h2>
-          <label htmlFor="nick">Nickname:</label>
-          <input
-            type="text"
-            id="nick"
-            placeholder='Introduce tu nick'
-            value={tempNick}
-            onChange={(e) => setTempNick(e.target.value)}
-            required />
-          <label htmlFor="password">Contraseña:</label>
-          <input
-            type="password"
-            id="password"
-            placeholder='Introduce tu contraseña'
-            required />
-          <label htmlFor="password">Repite la contraseña:</label>
-          <input
-            type="password"
-            id="RepeatPassword"
-            placeholder='Introduce tu contraseña'
-            required />
-          <label htmlFor="email">Introduzca un email:</label>
-          <input
-            type="email"
-            id="email"
-            placeholder='Introduce tu email'
-            required />
+          <fieldset>
+            <legend>Registro</legend>
+            <label htmlFor="nick">Nickname:</label>
+            <input type="text" id="nick" placeholder='Introduce tu nick' value={tempNick} onChange={(e) => setTempNick(e.target.value)} required />
+            <label htmlFor="password">Contraseña:</label>
+            <input type="password" id="password" placeholder='Introduce tu contraseña' required />
+            <label htmlFor="RepeatPassword">Repite la contraseña:</label>
+            <input type="password" id="RepeatPassword" placeholder='Introduce tu contraseña' required />
+            <label htmlFor="email">Email:</label>
+            <input type="email" id="email" placeholder='Introduce tu email' required />
+          </fieldset>
         </form>
       )}
 
       {selectedOption === 'login' && (
         <form className='formulario'>
-          <h2>Loguear con nick existente:</h2>
-          <label htmlFor="nick">Nickname:</label>
-          <input
-            type="text"
-            id="nick"
-            value={tempNick}
-            onChange={(e) => setTempNick(e.target.value)}
-            placeholder='Introduce tu nick'
-            required />
-
-          <label htmlFor="password">Contraseña:</label>
-          <input
-            type="password"
-            id="password"
-            placeholder='Introduce tu contraseña'
-            required />
-
+          <fieldset>
+            <legend>Login</legend>
+            <label htmlFor="nick">Nickname:</label>
+            <input type="text" id="nick" value={tempNick} onChange={(e) => setTempNick(e.target.value)} placeholder='Introduce tu nick' required />
+            <label htmlFor="password">Contraseña:</label>
+            <input type="password" id="password" placeholder='Introduce tu contraseña' required />
+          </fieldset>
         </form>
       )}
 
       {selectedOption === 'guest' && (
-        <>
-          <h2>Ingresar con nick sin registrar:</h2>
-          <input
-            type="text"
-            value={tempNick}
-            onChange={(e) => setTempNick(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
-            ref={modalInputRef}
-          />
-        </>
+        <form
+          className='formulario'
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSubmit(); // 
+          }}
+        >
+          <fieldset>
+            <legend>Invitado</legend>
+            <label htmlFor="nick">Nickname:</label>
+            <input
+              type="text"
+              value={tempNick}
+              onChange={(e) => setTempNick(e.target.value)}
+              ref={modalInputRef}
+            />
+          </fieldset>
+        </form>
       )}
 
       <p style={{ color: 'red' }}>{errorNick}</p>
-      <button onClick={handleSubmit}>Submit</button>
-    </Modal>
+      {selectedOption && (
+        <div className="submit-container">
+          <button onClick={handleSubmit}>Submit</button>
+        </div>
+      )}    </Modal>
   );
 };
 
+// Añade la validación de PropTypes para las propiedades del componente
+NicknameModal.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+};
 
 export default NicknameModal;
