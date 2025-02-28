@@ -5,7 +5,6 @@
   width: 60%;
   gap: 10px;
   position: relative;
-  /* Ensure the child elements are positioned relative to this container */
 }
 
 .emoji-picker,

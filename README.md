@@ -1,27 +1,60 @@
-Instrucciones para ejecutar el proyecto:
+🚀 Instrucciones para ejecutar el proyecto
 
+1️⃣ Clonar el repositorio desde GitHub
 
-1. Configurar y ejecutar el servidor
-Navega a la carpeta del servidor:
+Abre una terminal y ejecuta:
 
-cd server
-Ejecuta el servidor en modo desarrollo:
+git clone https://github.com/Juanc4rl0ss/proyecto-final-chat.git
+cd proyecto-final-chat
 
-npm run dev
-El servidor estará escuchando en el puerto 3000.
+2️⃣ Configurar y ejecutar el frontend
 
-2. Configurar y ejecutar el frontend
-Navega a la carpeta del frontend:
+📌 Instalar dependencias
 
 cd frontend
-Ejecuta la aplicación de React en modo desarrollo:
+npm install
+
+📌 Ejecutar la aplicación en modo desarrollo
 
 npm run dev
-Ahora podrás acceder a la aplicación de chat.
 
-3. Probar la aplicación
+🔹 La aplicación de React estará corriendo en http://localhost:5173.
+
+3️⃣ Configurar y ejecutar el servidor
+
+📌 Instalar dependencias
+
+cd ../server
+npm install
+
+📌 Ejecutar el servidor en modo desarrollo
+
+npm run dev
+
+🔹 El servidor estará escuchando en el puerto 3000.
+
+4️⃣ Configurar la base de datos con XAMPP
+
+📌 Pasos para importar la base de datos en MySQL con XAMPP
+
+Inicia XAMPP y activa Apache y MySQL.
+
+Abre phpMyAdmin en tu navegador:
+
+📍 http://localhost/phpmyadmin/
+
+Importa el archivo SQL:
+
+Ve a la pestaña Importar en phpMyAdmin.
+
+Selecciona el archivo [proyectochat.sql] subido en la raiz de github y ejecuta la importación en phpmyadmin
+
+Verifica que las tablas se hayan creado correctamente.
+
+5️⃣ Probar la aplicación
+
 Abre tu navegador y navega a http://localhost:5173.
-Ingresa un nick
 
-Abre múltiples pestañas o diferentes navegadores para ver cómo nuevos nicks acceden al chat y cómo se manejan las entradas y salidas de los usuarios en tiempo real. Los nicks interactúan entre ellos permitiendo una comunicación fluida en el chat.
+Antes de entrar al chat, tienes opción o de registrar un nick, hacer login o entrar como usuario invitado.
 
+Prueba abrir varias pestañas o diferentes navegadores para ver cómo los usuarios interactúan en tiempo real.
