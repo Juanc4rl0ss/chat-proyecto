@@ -48,47 +48,45 @@ router.post('/registrar', (req, res) => {
 
 // Ruta para iniciar sesión de un usuario
 router.post('/iniciar-sesion', (req, res) => {
-    console.log('Ruta /iniciar-sesion fue accedida');
-    console.log('Datos recibidos:', req.body);
 
     const { nickname, contraseña } = req.body;
-
-
-
     // Validación de los datos recibidos
     if (!nickname || !contraseña) {
         return res.status(400).json({ error: 'Todos los campos son obligatorios' });
     }
 
-
-    // Verificar si el nick existe en la base de datos p si la contraseña es correcta
-    db.query('SELECT * FROM usuarios WHERE nickname = ?', [nickname], (err, resultados) => {
+    // Seleccionar solo `id`, `nickname` y `contraseña` para mejorar eficiencia
+    db.query('SELECT id, nickname, contraseña FROM usuarios WHERE nickname = ?', [nickname], (err, resultados) => {
         if (err) {
-            console.error('Error en la base de datos al verificar las credenciales:', err);
+            console.error(' Error en la base de datos al verificar las credenciales:', err);
             return res.status(500).json({ error: 'Error en la base de datos' });
         }
 
-        // Si no se encontró el usuario entonces se envía un mensaje de error
+        // Si no se encontró el usuario, enviar error
         if (resultados.length === 0) {
             return res.status(400).json({ error: 'Nick o contraseña incorrectos' });
         }
 
-        // Verificar si la contraseña es correcta
-        const usuario = resultados[0];
+        const usuario = resultados[0]; // 🔹 Contiene `id`, `nickname` y `contraseña`
 
-        // Comparar la contraseña encriptada con la contraseña recibida
+        // Comparar la contraseña encriptada con la recibida
         const contraseñaCorrecta = bcrypt.compareSync(contraseña, usuario.contraseña);
 
-        // Si la contraseña no es correcta entonces se envía un mensaje de error
+        // Si la contraseña es incorrecta, enviar error
         if (!contraseñaCorrecta) {
             return res.status(400).json({ error: 'Nick o contraseña incorrectos' });
         }
 
-        console.log('Usuario autenticado con éxito:', nickname);
-        res.status(200).json({ mensaje: 'Usuario autenticado con éxito' });
+        console.log(`Usuario autenticado con éxito: ${usuario.nickname}, ID: ${usuario.id}`);
+
+        // Enviar `id` en la respuesta para que el frontend lo almacene
+        res.status(200).json({ 
+            mensaje: 'Usuario autenticado con éxito',
+            id: usuario.id 
+        });
     });
-}
-);
+});
+
 // Ruta para verificar si el nick ya existe antes de permitir entrar como invitado
 router.get('/verificar', (req, res) => {
     const { nickname } = req.query;
