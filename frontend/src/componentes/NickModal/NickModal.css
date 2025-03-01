@@ -13,7 +13,7 @@
     border-radius: 10px;
     outline: none;
     z-index: 1000;
-    width: 450px;
+    width: 415px;
     height: 460px;
     max-height: 500px;
     overflow-y: auto;
@@ -101,7 +101,6 @@ button {
     height: auto;
 }
 
-/* 📌 Asegurar que fieldset esté bien alineado */
 fieldset {
     display: flex;
     flex-direction: column;
@@ -114,7 +113,6 @@ fieldset {
     max-width: 300px;
 }
 
-/* 📌 Estilo del legend para que no se vea pegado */
 legend {
     font-size: 18px;
     font-weight: bold;

@@ -1,17 +1,15 @@
 .escritura-boton {
   display: flex;
-  flex-direction: space-between;
+  flex-direction: column;
   align-items: center;
-  width: 60%;
+  width: 83%;
   gap: 10px;
   position: relative;
 }
 
-.emoji-picker,
-.size-picker {
+.emoji-picker{
   position: absolute;
   top: -220px;
-  /* Adjust as necessary to position above the buttons */
   z-index: 1000;
   background: white;
   border: 1px solid #ccc;
@@ -22,29 +20,35 @@
 
 .emoji-picker {
   left: 0;
-  /* Position to the left of the container */
 }
 
 .size-picker {
   display: block;
   right: 0;
-  /* Position to the right of the container */
 }
 
 .estilos-boton {
-  position: relative;
   background: blue;
   color: white;
   padding: 5px 10px;
   border-radius: 5px;
   cursor: pointer;
-  margin-top: 5px;
   margin-left: 10px;
+  width: 60px;
+  height: 35px;
 }
 
-.estilos-enviar {
-  padding: 8px;
+.estilos-upload {
+  background: blue;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-left: 10px;
+  width: 60px;
+  height: 35px;
 }
+
+
 
 .estilos-enviar:hover {
   background: blue;
@@ -53,12 +57,8 @@
 
 .contenedor-fuente {
   display: inline-block;
-  position: relative;
-
-}
-
-.contenedor-fuente .size-picker {
-  top: 30px;
+  position: relative;  
+  margin-bottom: 6;
 }
 
 .estilos-desplegable {
@@ -68,35 +68,63 @@
   padding: 5px 10px;
   border-radius: 5px;
   cursor: pointer;
-  margin-top: 5px;
   margin-left: 10px;
-}
-
-.emoji-picker {
-  left: 0;
-  /* Position to the left of the container */
-}
-
-.size-picker {
-  display: block;
-  right: 0;
-  /* Position to the right of the container */
+  height: 35px;
+  
 }
 
 .icon {
   cursor: pointer;
+  color: white;
+  font-size: 14px;
+  margin-top: 10px;
 }
 
-  
 .escribir-texto {
   flex-grow: 1;
-}
-
-.escribir-texto {
+  width: 180px; 
   height: 30px;
-  width: 60%;
+  margin-left:5px;
+
 }
 
 .escribir-texto:hover {
-  background:burlywood;
+  background: burlywood;
+}
+.contenedor-fuente {
+  display: inline-block;
+  position: relative;
+  margin-bottom: 10px;
+  width: 90%; 
+  display: flex;  
+  gap: 10px; 
+  flex-wrap: wrap;
+}
+
+.image-upload {
+  background: blue;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-left: 10px;
+  width: 60px;
+  height: 35px;
+}
+
+.estilos-grabar {
+  background: rgb(145, 145, 148);
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 90px;
+  height: 35px;
+  font-size: 13px;
+  gap: 10px;
+  /* Centrado con Flexbox */
+  display: flex;
+  align-items: center; 
+  justify-content: center;
+  text-align: center;
+  border: none;
+  margin-left: 10px;
 }

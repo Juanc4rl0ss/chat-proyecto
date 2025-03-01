@@ -51,6 +51,13 @@ io.on('connection', (socket) => {
             usuario: 'INFO',
             mensaje: `${usuario} se ha conectado`
         });
+        socket.emit('chat_message', {
+            usuario: 'INFO', // En lugar del nombre del usuario
+            mensaje: `Ha ingresado en el chat ${usuario}`,
+            tipo: 'bienvenida'
+        });
+        
+    
 
         // Llama al callback sin errores
         callback({ error: null });

@@ -19,7 +19,6 @@ const EscrituraBoton = ({
   setFontFamily,
 }) => {
   //Aqui se definen los estados y referencias
-  const [showSizePicker, setShowSizePicker] = useState(false);
   const [recording, setRecording] = useState(false);
   const pickerRef = useRef(null);
   const inputRef = useRef(null);
@@ -103,66 +102,66 @@ const EscrituraBoton = ({
 
   return (
     <div className="escritura-boton">
-      <button onClick={() => setShowIconPicker(!showIconPicker)} className="estilos-boton">
-        <FontAwesomeIcon icon={faSmile} className="icon" />
-      </button>
-      {showIconPicker && (
-        <div className="emoji-picker" ref={pickerRef}>
-          <Picker data={data} onEmojiSelect={addEmoji} />
-        </div>
-      )}
-      <input
-        className="escribir-texto"
-        type="text"
-        value={nuevoMensaje}
-        onChange={(e) => setNuevoMensaje(e.target.value)}
-        onKeyPress={handleKeyPress}
-        ref={inputRef}
-        style={{ fontSize: fontSize, fontFamily: fontFamily }}
-      />
-      <button className="estilos-enviar" onClick={enviarMensaje}>
-        Enviar
-      </button>
-      <button className="estilos-boton" onClick={() => setShowSizePicker(!showSizePicker)}>
-        Size
-      </button>
-      {showSizePicker && (
-        <div className="contenedor-fuente">
-          <select onChange={(e) => setFontSize(e.target.value)} value={fontSize} className="estilos-desplegable">
-            <option value="16px">Elige tamaño:</option>
-            <option value="12px">12px</option>
-            <option value="14px">14px</option>
-            <option value="16px">16px</option>
-            <option value="18px">18px</option>
-            <option value="20px">20px</option>
-          </select>
-        </div>
-      )}
       <div className="contenedor-fuente">
-        <select onChange={(e) => setFontFamily(e.target.value)} value={fontFamily} className="estilos-desplegable">
-          <option value="Arial">Elige fuente:</option>
-          <option value="Arial">Arial</option>
-          <option value="Verdana">Verdana</option>
-          <option value="Courier New">Courier New</option>
-          <option value="Georgia">Georgia</option>
-          <option value="Comic Sans MS">Comic Sans MS</option>
-        </select>
+        <button onClick={() => setShowIconPicker(!showIconPicker)} className="estilos-boton">
+          <FontAwesomeIcon icon={faSmile} />
+        </button>
+        {showIconPicker && (
+          <div className="emoji-picker" ref={pickerRef}>
+            <Picker data={data} onEmojiSelect={addEmoji} />
+          </div>
+        )}
+        <input
+          className="escribir-texto"
+          type="text"
+          value={nuevoMensaje}
+          onChange={(e) => setNuevoMensaje(e.target.value)}
+          onKeyPress={handleKeyPress}
+          ref={inputRef}
+          style={{ fontSize: fontSize, fontFamily: fontFamily }}
+        />
+        <button className="estilos-boton" onClick={enviarMensaje}>
+          Enviar
+        </button>
+        {(
+  <>
+    <select onChange={(e) => setFontSize(e.target.value)} value={fontSize} className="estilos-desplegable">
+      <option value="">Elige tamaño:</option>
+      <option value="12px">12px</option>
+      <option value="14px">14px</option>
+      <option value="16px">16px</option>
+      <option value="18px">18px</option>
+      <option value="20px">20px</option>
+    </select>
+    <select onChange={(e) => setFontFamily(e.target.value)} value={fontFamily} className="estilos-desplegable">
+      <option value="Arial">Elige fuente:</option>
+      <option value="Arial">Arial</option>
+      <option value="Verdana">Verdana</option>
+      <option value="Courier New">Courier New</option>
+      <option value="Georgia">Georgia</option>
+      <option value="Comic Sans MS">Comic Sans MS</option>
+    </select>
+    <input
+      type="file"
+      accept="image/*"
+      onChange={handleImageUpload}
+      style={{ display: 'none' }}
+      id="image-upload"
+    />
+    <label htmlFor="image-upload" className="image-upload">
+      <FontAwesomeIcon icon={faImage} className="icon" />
+    </label>
+    <button className="estilos-grabar" onClick={handleAudioStartStop}>
+      <FontAwesomeIcon icon={faMicrophone} />
+      {recording ? ' Detener' : ' Grabar'}
+    </button>
+  </>
+)}
       </div>
-      <input
-        type="file"
-        accept="image/*"
-        onChange={handleImageUpload}
-        style={{ display: 'none' }}
-        id="image-upload"
-      />
-      <label htmlFor="image-upload" className="estilos-boton">
-        <FontAwesomeIcon icon={faImage} className="icon" />
-      </label>
-      <button className="estilos-boton" onClick={handleAudioStartStop}>
-        <FontAwesomeIcon icon={faMicrophone} className="icon" />
-        {recording ? ' Detener' : ' Grabar'}
-      </button>
+
+
     </div>
+
   );
 };
 

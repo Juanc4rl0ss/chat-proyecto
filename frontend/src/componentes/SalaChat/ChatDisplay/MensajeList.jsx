@@ -16,17 +16,17 @@ const MensajeList = ({ mensajes, userColors, colorPalette, fontSize, fontFamily,
         {mensajes.map((mensaje, index) => {
           // Mantener el color de usuario igual que antes
           const userColor = userColors[mensaje.usuario] || colorPalette[Math.floor(Math.random() * colorPalette.length)];
-          
+
           return (
             <li
               key={index}
-              className={`li-mensaje ${mensaje.usuario === nick ? 'own' : ''}`}
+              className={`li-mensaje ${mensaje.usuario === nick || mensaje.tipo === 'bienvenida' ? 'own' : ''}`}
               style={{
                 fontSize: fontSize,
                 fontFamily: fontFamily,
               }}
             >
-              <span style={{ color: userColor }}>{mensaje.usuario}</span>:{' '}
+              <span style={{ color: userColor }}>{mensaje.usuario}</span>: {' '}
               {mensaje.tipo === 'audio' ? (
                 <audio controls>
                   <source src={`data:audio/webm;base64,${mensaje.mensaje}`} type="audio/webm" />
@@ -42,6 +42,8 @@ const MensajeList = ({ mensajes, userColors, colorPalette, fontSize, fontFamily,
                 mensaje.mensaje
               )}
             </li>
+
+
           );
         })}
       </ul>
