@@ -11,14 +11,17 @@ const useSocket = (url) => {
   useEffect(() => {
     socket.on('connect');
 
+    // Actualiza la lista de mensajes
     socket.on('chat_message', (data) => {
       setMensajes((mensajes) => [...mensajes, data]);
     });
 
+    // Actualiza la lista de mensajes con el historial
     socket.on('chat_history', (history) => {
       setMensajes(history);
     });
 
+    // Actualiza la lista de usuarios
     socket.on('user_list', (userList) => {
       setUsuarios(userList);
     });

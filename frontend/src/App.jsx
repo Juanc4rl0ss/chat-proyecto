@@ -33,7 +33,6 @@ function App() {
   // Desestructuramos socketData para obtener los valores individuales.
   const { mensajes, enviarMensaje, usuarios, userColors, handleSubmitNick } = socketData;
 
-
   //Función para enviar un mensaje
   const enviarMensajeWrapper = () => {
     enviarMensaje(nick, nuevoMensaje);
@@ -84,9 +83,6 @@ function App() {
             />
           </>
         }
-
-
-
       </main>
     </Router>
   );

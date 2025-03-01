@@ -21,8 +21,11 @@ const UsoDeSockets = (colorPalette) => {
       setMensajes(history);
     });
 
+    // Actualiza la lista de usuarios y colores de usuario
     socket.on('user_list', (userList) => {
       const newColors = {};
+
+      // Asigna un color aleatorio a los usuarios que no tienen uno
       userList.forEach(user => {
         if (!userColors[user]) {
           newColors[user] = colorPalette[Math.floor(Math.random() * colorPalette.length)];
@@ -40,6 +43,7 @@ const UsoDeSockets = (colorPalette) => {
     };
   }, [userColors, colorPalette]);
 
+  // Función para enviar un mensaje al servidor
   const enviarMensaje = (nick, nuevoMensaje) => {
     if (nuevoMensaje === '') return;
     socket.emit('chat_message', {
@@ -49,6 +53,7 @@ const UsoDeSockets = (colorPalette) => {
     });
   };
 
+  // Función para enviar el nombre de usuario al servidor
   const handleSubmitNick = (tempNick, setNick, setErrorNick, setModalIsOpen) => {
     if (!tempNick) {
       setErrorNick('El nombre no puede estar vacío');
