@@ -1,37 +1,53 @@
 .chat-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 20px;
-    background-color: #1E1E2F;
-    color: white;
-    margin-bottom: 20px;
-    border-radius: 10px;
-    width: 72%;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-  }
-  
-  .chat-header h1 {
-    flex-grow: 1;
-    text-align: center;
-    margin: 0;
-    font-size: 22px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-  }
-  
-  .logout-button {
-    margin-left: auto;
-    padding: 10px 15px;
-    background-color: #D9534F;
-    color: white;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-    border-radius: 5px;
-    transition: background 0.3s ease;
-  }
-  
-  .logout-button:hover {
-    background-color: #B52B27;
-  }
-  
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background-color: #1E1E2F;
+  color: white;
+  width:75%;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.chat-header h1 {
+  flex-grow: 1;
+  text-align: center;
+  margin: 0;
+  font-size: 22px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 20px; /* Aumenta la separación entre el nombre y el botón */
+  background: rgba(255, 255, 255, 0.1); /* Fondo semitransparente para mejor visibilidad */
+  padding: 8px 15px;
+  border-radius: 8px;
+}
+
+.user-name {
+  font-size: 16px;
+  font-weight: bold;
+  color: #F0E68C; /* Un color amarillo suave para destacar */
+}
+
+.logout-button {
+  padding: 10px 15px;
+  background-color: #D9534F;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  width: 80px;
+  height: 35px;
+  border-radius: 5px;
+  transition: background 0.3s ease, transform 0.2s;
+}
+
+.logout-button:hover {
+  background-color: #B52B27;
+  transform: scale(1.05);
+}
