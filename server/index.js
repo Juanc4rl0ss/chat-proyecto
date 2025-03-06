@@ -109,7 +109,7 @@ io.on('connection', (socket) => {
     
         // Guardar en la base de datos
         db.query(
-            "INSERT INTO historial (usuario_id, nickname, mensaje) VALUES (?, ?, ?)",
+            "INSERT INTO chat_history (user_id, nickname, message) VALUES (?, ?, ?)",
             [usuarioId, nickname, mensaje],
             (error, resultados) => {
                 if (error) {
