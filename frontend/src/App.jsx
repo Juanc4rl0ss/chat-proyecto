@@ -5,6 +5,7 @@ import NicknameModal from './componentes/NickModal/NickModal';
 import EscrituraBoton from './componentes/SalaChat/ChatControls/EscrituraBoton';
 import MensajeList from './componentes/SalaChat/ChatDisplay/MensajeList';
 import UsoDeSockets from './componentes/Sockets/UsoDeSockets';
+import Header from './componentes/Header/Header';
 import Modal from 'react-modal';
 import io from 'socket.io-client';
 
@@ -49,14 +50,7 @@ function App() {
   return (
     <Router>
       <main className="App">
-        <header className="chat-header">
-          <h1 style={{ flexGrow: 1, textAlign: 'center', margin: 0 }}>Bienvenido/a al Chat</h1>
-          {nick && !modalIsOpen && (
-            <button className="logout-button" onClick={() => setModalIsOpen(true)} style={{ marginLeft: 'auto' }}>
-              Salir
-            </button>
-          )}
-        </header>
+        <Header nick={nick} modalIsOpen={modalIsOpen} setModalIsOpen={setModalIsOpen} />
 
         <NicknameModal
           isOpen={modalIsOpen}
