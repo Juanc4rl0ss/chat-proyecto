@@ -49,40 +49,45 @@ function App() {
   return (
     <Router>
       <main className="App">
-        {
-          <>
-            <NicknameModal
-              isOpen={modalIsOpen}
-              onSubmit={(tempNick, setErrorNick) => handleSubmitNick(tempNick, setNick, setErrorNick, setModalIsOpen)}
-            />
+        <header className="chat-header">
+          <h1 style={{ flexGrow: 1, textAlign: 'center', margin: 0 }}>Bienvenido/a al Chat</h1>
+          {nick && !modalIsOpen && (
+            <button className="logout-button" onClick={() => setModalIsOpen(true)} style={{ marginLeft: 'auto' }}>
+              Salir
+            </button>
+          )}
+        </header>
 
-            <MensajeList
-              mensajes={mensajes}
-              userColors={userColors}
-              colorPalette={colorPalette}
-              fontSize={fontSize}
-              fontFamily={fontFamily}
-              nick={nick}
-              mensajesRef={mensajesRef}
-              usuarios={usuarios}
-            />
+        <NicknameModal
+          isOpen={modalIsOpen}
+          onSubmit={(tempNick, setErrorNick) => handleSubmitNick(tempNick, setNick, setErrorNick, setModalIsOpen)}
+        />
 
-            <EscrituraBoton
-              showIconPicker={showIconPicker}
-              setShowIconPicker={setShowIconPicker}
-              nuevoMensaje={nuevoMensaje}
-              setNuevoMensaje={setNuevoMensaje}
-              enviarMensaje={enviarMensajeWrapper}
-              fontSize={fontSize}
-              setFontSize={setFontSize}
-              fontFamily={fontFamily}
-              setFontFamily={setFontFamily}
-              nick={nick}
-              inputRef={inputRef}
-              socket={socket}
-            />
-          </>
-        }
+        <MensajeList
+          mensajes={mensajes}
+          userColors={userColors}
+          colorPalette={colorPalette}
+          fontSize={fontSize}
+          fontFamily={fontFamily}
+          nick={nick}
+          mensajesRef={mensajesRef}
+          usuarios={usuarios}
+        />
+
+        <EscrituraBoton
+          showIconPicker={showIconPicker}
+          setShowIconPicker={setShowIconPicker}
+          nuevoMensaje={nuevoMensaje}
+          setNuevoMensaje={setNuevoMensaje}
+          enviarMensaje={enviarMensajeWrapper}
+          fontSize={fontSize}
+          setFontSize={setFontSize}
+          fontFamily={fontFamily}
+          setFontFamily={setFontFamily}
+          nick={nick}
+          inputRef={inputRef}
+          socket={socket}
+        />
       </main>
     </Router>
   );
