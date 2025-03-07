@@ -12,6 +12,7 @@ import io from 'socket.io-client';
 Modal.setAppElement('#root');
 
 const socket = io('http://localhost:3000');
+const url = 'http://localhost:3000';
 
 const colorPalette = [
   '#1F77B4', '#FF7F0E', '#2CA02C', '#D62728', '#9467BD',
@@ -29,10 +30,10 @@ function App() {
   const inputRef = useRef(null);
 
   // Llamamos al hook UsoDeSockets y guardamos el resultado en la variable socketData.
-  const socketData = UsoDeSockets(colorPalette);
+  const socketData = UsoDeSockets(url, colorPalette);
 
   // Desestructuramos socketData para obtener los valores individuales.
-  const { mensajes, enviarMensaje, usuarios, userColors, handleSubmitNick } = socketData;
+  const { mensajes, enviarMensaje, usuarios, userColors, handleSubmitNick, desconectarSocket, conectarSocket } = socketData;
 
   //Función para enviar un mensaje
   const enviarMensajeWrapper = () => {
@@ -50,7 +51,7 @@ function App() {
   return (
     <Router>
       <main className="App">
-        <Header nick={nick} modalIsOpen={modalIsOpen} setModalIsOpen={setModalIsOpen} />
+        <Header nick={nick} modalIsOpen={modalIsOpen} setModalIsOpen={setModalIsOpen} desconectarSocket={desconectarSocket} conectarSocket={conectarSocket} />
 
         <NicknameModal
           isOpen={modalIsOpen}

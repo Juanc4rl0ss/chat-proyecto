@@ -34,7 +34,13 @@ const useSocket = (url) => {
     };
   }, [socket]);
 
-  return { socket, mensajes, usuarios, setMensajes };
+  // Función para desconectar el socket manualmente
+  const desconectarSocket = () => {
+    socket.emit("Usuario desconectado");
+    socket.disconnect();
+  }
+
+  return { socket, mensajes, usuarios, setMensajes, desconectarSocket };
 };
 export default useSocket;
 

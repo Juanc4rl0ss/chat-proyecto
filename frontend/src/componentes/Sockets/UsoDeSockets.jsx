@@ -1,16 +1,20 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import io from 'socket.io-client';
 
-const socket = io('http://localhost:3000');
-
 // Hook personalizado para manejar la conexión con el servidor de sockets
-const UsoDeSockets = (colorPalette) => {
+const UsoDeSockets = (url, colorPalette) => {
+  const socketRef = useRef(null); // ✅ Usamos `useRef` para evitar múltiples re-renderizados
   const [mensajes, setMensajes] = useState([]);
   const [usuarios, setUsuarios] = useState([]);
   const [userColors, setUserColors] = useState({});
 
-  // Efecto para manejar los eventos de conexión, mensajes y usuarios
   useEffect(() => {
+    if (!socketRef.current) {
+      socketRef.current = io(url); // ✅ Se inicializa solo una vez
+    }
+
+    const socket = socketRef.current; // Usamos `socketRef.current` para manejar eventos
+
     socket.on('connect', () => console.log('Connected to server'));
 
     socket.on('chat_message', (data) => {
@@ -21,11 +25,8 @@ const UsoDeSockets = (colorPalette) => {
       setMensajes(history);
     });
 
-    // Actualiza la lista de usuarios y colores de usuario
     socket.on('user_list', (userList) => {
       const newColors = {};
-
-      // Asigna un color aleatorio a los usuarios que no tienen uno
       userList.forEach(user => {
         if (!userColors[user]) {
           newColors[user] = colorPalette[Math.floor(Math.random() * colorPalette.length)];
@@ -35,32 +36,33 @@ const UsoDeSockets = (colorPalette) => {
       setUsuarios(userList);
     });
 
+    // ✅ Cleanup: Desconectar el socket completamente al desmontar el componente
     return () => {
-      socket.off('connect');
-      socket.off('chat_message');
-      socket.off('chat_history');
-      socket.off('user_list');
+      if (socketRef.current) {
+        socketRef.current.disconnect();
+        socketRef.current = null;
+      }
     };
-  }, [userColors, colorPalette]);
+  }, [url, colorPalette]); // ✅ Solo se ejecuta cuando cambia `url` o `colorPalette`
 
-  // Función para enviar un mensaje al servidor
+  // ✅ Función para enviar un mensaje
   const enviarMensaje = (nick, nuevoMensaje) => {
-    if (nuevoMensaje === '') return;
-    socket.emit('chat_message', {
+    if (!nuevoMensaje.trim()) return;
+    socketRef.current?.emit('chat_message', {
       usuario: nick,
       mensaje: nuevoMensaje,
       tipo: 'texto'
     });
   };
 
-  // Función para enviar el nombre de usuario al servidor
+  // ✅ Función para enviar el nombre de usuario
   const handleSubmitNick = (tempNick, setNick, setErrorNick, setModalIsOpen) => {
     if (!tempNick) {
       setErrorNick('El nombre no puede estar vacío');
       return;
     }
-    socket.emit('new_user', tempNick, (response) => {
-      if (response.error) {
+    socketRef.current?.emit('new_user', tempNick, (response) => {
+      if (response?.error) {
         setErrorNick(response.error);
       } else {
         setNick(tempNick);
@@ -69,12 +71,32 @@ const UsoDeSockets = (colorPalette) => {
     });
   };
 
+  // ✅ Función para desconectar el socket
+  const desconectarSocket = () => {
+    if (socketRef.current) {
+      socketRef.current.emit('Usuario desconectado');
+      socketRef.current.disconnect();
+      socketRef.current = null; // ✅ Se limpia la referencia
+      setUsuarios([]);
+      setMensajes([]);
+    }
+  };
+
+  // ✅ Función para reconectar el socket
+  const conectarSocket = () => {
+    if (!socketRef.current || !socketRef.current.connected) {
+      socketRef.current = io(url);
+    }
+  };
+
   return {
     mensajes,
     usuarios,
     userColors,
     enviarMensaje,
     handleSubmitNick,
+    desconectarSocket,
+    conectarSocket
   };
 };
 
