@@ -1,67 +1,77 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import './MensajeList.css'; // Importamos el archivo CSS
 
-const MensajeList = ({ mensajes, userColors, colorPalette, fontSize, fontFamily, nick, mensajesRef, usuarios }) => {
+const MensajeList = ({ mensajes, fontSize, fontFamily, nick, mensajesRef, usuarios }) => {
+  const [userColors, setUserColors] = useState({}); // 🔹 Estado para guardar los colores asignados
+
   useEffect(() => {
-    // Desplaza la lista de mensajes hacia abajo cuando se actualizan los mensajes
     if (mensajesRef.current) {
       mensajesRef.current.scrollTop = mensajesRef.current.scrollHeight;
     }
-  }, [mensajes]); // Ejecuta este efecto cada vez que 'mensajes' cambie
+  }, [mensajes]);
+
+  useEffect(() => {
+    // 🔹 Asignar colores solo a nuevos usuarios y mantener los existentes
+    setUserColors(prevColors => {
+      const newColors = { ...prevColors };
+      usuarios.forEach(user => {
+        if (!newColors[user.nombre]) {
+          newColors[user.nombre] = getRandomColor(); // Asigna color solo a nuevos usuarios
+        }
+      });
+      return newColors;
+    });
+  }, [usuarios]);
+
+  // ✅ Función para obtener un color aleatorio de la paleta
+  const colorPalette = ['#1F77B4', '#FF7F0E', '#2CA02C', '#D62728', '#9467BD', '#8C564B', '#E377C2', '#7F7F7F', '#BCBD22', '#17BECF'];
+  const getRandomColor = () => colorPalette[Math.floor(Math.random() * colorPalette.length)];
 
   return (
     <div className="escritura-usuarios">
       {/* Renderiza la lista de mensajes */}
       <ul className="ul-mensajes" ref={mensajesRef}>
         {mensajes.map((mensaje, index) => {
-          // Mantener el color de usuario igual que antes
-          const userColor = userColors[mensaje.usuario] || colorPalette[Math.floor(Math.random() * colorPalette.length)];
+          const userColor = mensaje.usuario === "INFO" ? "#FF7F0E" : userColors[mensaje.usuario] || getRandomColor();
+
+          const usuarioData = usuarios.find(user => user.nombre === mensaje.usuario);
+          const avatarSrc = usuarioData?.avatar || null;
 
           return (
-            <li
-              key={index}
-              className={`li-mensaje ${mensaje.usuario === nick || mensaje.tipo === 'bienvenida' ? 'own' : ''}`}
-              style={{
-                fontSize: fontSize,
-                fontFamily: fontFamily,
-              }}
-            >
-              <span style={{ color: userColor }}>{mensaje.usuario}</span>: {' '}
-              {mensaje.tipo === 'audio' ? (
-                <audio controls>
-                  <source src={`data:audio/webm;base64,${mensaje.mensaje}`} type="audio/webm" />
-                  Tu navegador no soporta el elemento de audio.
-                </audio>
-              ) : mensaje.tipo === 'imagen' ? (
-                <img
-                  src={`data:image/jpeg;base64,${mensaje.mensaje}`}
-                  alt="imagen enviada"
-                  style={{ maxWidth: '200px', maxHeight: '200px' }}
-                />
-              ) : (
-                mensaje.mensaje
-              )}
+            <li key={index} className={`li-mensaje ${mensaje.usuario === nick || mensaje.tipo === 'bienvenida' ? 'own' : ''}`} style={{ fontSize: fontSize, fontFamily: fontFamily }}>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                {mensaje.usuario !== "INFO" && (
+                  avatarSrc ? (
+                    <img src={avatarSrc} alt={mensaje.usuario} width="30" height="30" style={{ borderRadius: '50%', marginRight: '10px' }} />
+                  ) : (
+                    <span style={{ marginRight: '10px' }}>👤</span>
+                  )
+                )}
+                <span style={{ color: userColor, fontWeight: 'bold' }}>{mensaje.usuario}</span>: {' '}
+                {mensaje.mensaje}
+              </div>
             </li>
-
-
           );
         })}
       </ul>
 
-      {/* Renderiza la lista de usuarios */}
+      {/* Renderiza la lista de usuarios conectados */}
       <ul className="ul-usuarios">
         <h3>Usuarios Conectados</h3>
         {usuarios.map((usuario, index) => (
-          <li
-            key={index}
-            style={{
-              color: userColors[usuario] || '#000000'
-            }}
-          >
-            {usuario}
+          <li key={index} style={{ color: userColors[usuario.nombre] || getRandomColor() }}>
+            <span className="user-icon">
+              {usuario.avatar ? (
+                <img src={usuario.avatar} alt={usuario.nombre} />
+              ) : (
+                <span className="default-avatar">👤</span>
+              )}
+            </span>
+            {usuario.nombre}
           </li>
         ))}
       </ul>
+
     </div>
   );
 };

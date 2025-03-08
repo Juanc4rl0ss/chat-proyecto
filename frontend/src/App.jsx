@@ -23,6 +23,7 @@ function App() {
   const [fontSize, setFontSize] = useState('16px');
   const [nuevoMensaje, setNuevoMensaje] = useState('');
   const [nick, setNick] = useState('');
+  const [avatar, setAvatar] = useState('');
   const [modalIsOpen, setModalIsOpen] = useState(true);
   const [fontFamily, setFontFamily] = useState('Arial');
   const [showIconPicker, setShowIconPicker] = useState(false);
@@ -51,12 +52,12 @@ function App() {
   return (
     <Router>
       <main className="App">
-        <Header nick={nick} modalIsOpen={modalIsOpen} setModalIsOpen={setModalIsOpen} desconectarSocket={desconectarSocket} conectarSocket={conectarSocket} />
+        <Header nick={nick} avatar={avatar} modalIsOpen={modalIsOpen} setModalIsOpen={setModalIsOpen} desconectarSocket={desconectarSocket} conectarSocket={conectarSocket} />
 
         <NicknameModal
           isOpen={modalIsOpen}
-          onSubmit={(tempNick, setErrorNick) => handleSubmitNick(tempNick, setNick, setErrorNick, setModalIsOpen)}
-        />
+          onSubmit={(tempNick, setErrorNick) =>
+            handleSubmitNick(tempNick, setNick, setAvatar, setErrorNick, setModalIsOpen)}        />
 
         <MensajeList
           mensajes={mensajes}

@@ -51,3 +51,19 @@
   background-color: #B52B27;
   transform: scale(1.05);
 }
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.user-avatar-placeholder {
+  font-size: 30px;
+}

@@ -2,16 +2,21 @@ const express = require('express');
 const router = express.Router();
 const db = require('../config/db');
 const bcrypt = require('bcrypt');
-const { getUsuarios } = require('../usuarios'); 
+const { getUsuarios } = require('../usuarios');
 
 // Ruta para registrar un nuevo usuario
 router.post('/registrar', (req, res) => {
     console.log('Ruta /registrar fue accedida');
     console.log('Datos recibidos:', req.body);
 
-    const { nickname: nickname, contraseña, correo } = req.body;
+    // Extraer datos del cuerpo de la solicitud
+    const { nickname, contraseña, correo, avatar } = req.body;
 
-    // Validación de los datos recibidos si no se reciben los datos necesarios
+    // Asegurar que avatar sea NULL si está vacío o indefinido
+    const avatarFinal = (avatar && typeof avatar === 'string') ? avatar.trim() : null;
+
+
+    // Validación de los datos recibidos
     if (!nickname || !contraseña || !correo) {
         return res.status(400).json({ error: 'Todos los campos son obligatorios' });
     }
@@ -31,10 +36,12 @@ router.post('/registrar', (req, res) => {
         const saltRounds = 10;
         const contraseñaEncriptada = bcrypt.hashSync(contraseña, saltRounds);
 
+        // Insertar el nuevo usuario en la base de datos con avatar (si existe)
+        db.query(
+            'INSERT INTO usuarios (`nickname`, `contraseña`, `correo`, `avatar`) VALUES (?, ?, ?, ?)',
+            [nickname, contraseñaEncriptada, correo, avatarFinal],
+            (err, resultados) => {
 
-        // Insertar el nuevo usuario en la base de datos
-        db.query('INSERT INTO usuarios (nickname, contraseña, correo) VALUES (?, ?, ?)',
-            [nickname, contraseñaEncriptada, correo], (err, resultados) => {
                 if (err) {
                     console.error('Error al registrar el usuario:', err);
                     return res.status(500).json({ error: 'Error al registrar el usuario' });
@@ -42,9 +49,11 @@ router.post('/registrar', (req, res) => {
 
                 console.log('Usuario registrado con éxito:', nickname);
                 res.status(200).json({ mensaje: 'Usuario registrado con éxito' });
-            });
+            }
+        );
     });
 });
+
 
 // Ruta para iniciar sesión de un usuario
 router.post('/iniciar-sesion', (req, res) => {
@@ -80,9 +89,9 @@ router.post('/iniciar-sesion', (req, res) => {
         console.log(`Usuario autenticado con éxito: ${usuario.nickname}, ID: ${usuario.id}`);
 
         // Enviar `id` en la respuesta para que el frontend lo almacene
-        res.status(200).json({ 
+        res.status(200).json({
             mensaje: 'Usuario autenticado con éxito',
-            id: usuario.id 
+            id: usuario.id
         });
     });
 });

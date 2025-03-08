@@ -34,7 +34,7 @@ io.on('connection', (socket) => {
         console.log("🔹 Se ha conectado un cliente:", usuario);
 
         db.query(
-            "SELECT id FROM usuarios WHERE nickname = ?",
+            "SELECT id, avatar FROM usuarios WHERE nickname = ?",
             [usuario],
             (err, resultados) => {
                 if (err) {
@@ -43,8 +43,11 @@ io.on('connection', (socket) => {
                 }
 
                 let usuarioId = null;
+                let avatar = null;
+
                 if (resultados.length > 0) {
                     usuarioId = resultados[0].id;
+                    avatar = resultados[0].avatar;
                     console.log(`✅ Usuario registrado detectado: ${usuario}, ID: ${usuarioId}`);
                 } else {
                     console.log(`👤 Usuario no registrado (invitado): ${usuario}`);
@@ -58,23 +61,25 @@ io.on('connection', (socket) => {
                 }
 
                 // Agregar usuario
-                agregarUsuario({ id: socket.id, nombre: usuario, usuarioId });
+                agregarUsuario({ id: socket.id, nombre: usuario, usuarioId, avatar });
 
                 console.log(`👥 Lista actualizada de usuarios:`, getUsuarios().map(user => user.nombre));
 
-                io.emit('user_list', getUsuarios().map(user => user.nombre));
-
+                io.emit('user_list', getUsuarios().map(user => ({
+                    nombre: user.nombre,
+                    avatar: user.avatar
+                })));
+                
                 socket.emit('chat_message', {
                     usuario: 'INFO',
                     mensaje: `Bienvenido/a al chat, ${usuario}!`,
                     tipo: 'bienvenida'
                 });              
 
-                callback({ id: usuarioId, nombre: usuario });
+                callback({ id: usuarioId, nombre: usuario, avatar });
             }
         );
     });
-
 
     // Evento para manejar el envío de mensajes
     socket.on('chat_message', (data) => {
@@ -122,7 +127,10 @@ io.on('connection', (socket) => {
 
             console.log(`👥 Lista de usuarios actualizada:`, getUsuarios().map(user => user.nombre));
 
-            io.emit('user_list', getUsuarios().map(user => user.nombre));
+            io.emit('user_list', getUsuarios().map(user => ({
+                nombre: user.nombre,
+                avatar: user.avatar
+            })));
             io.emit('chat_message', { usuario: 'INFO', mensaje: `${usuarioDesconectado.nombre} se ha desconectado` });
         }
     });

@@ -24,6 +24,42 @@
   margin-left: 10px;
   color: black;
   font-weight: bold;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Estilos para cada usuario en la lista */
+.ul-usuarios li {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  width: 100%; /* Ocupar el ancho disponible */
+  justify-content: flex-start; /* Alineación izquierda */
+}
+
+/* Contenedor del icono o avatar */
+.user-icon {
+  width: 30px;  /* Tamaño uniforme */
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Imagen del avatar */
+.user-icon img {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+}
+
+/* Ajuste para nombres de usuario */
+.user-name {
+  min-width: 80px; /* Mantiene una alineación uniforme */
+  text-align: left;
+  white-space: nowrap;
 }
 
 /* Estilos de los mensajes */
@@ -46,31 +82,33 @@
   align-self: flex-end; 
 }
 
+/* Contenedor de la sección de usuarios y mensajes */
 .escritura-usuarios {
   display: flex;
   flex-direction: row;
   justify-content: center;
-  width: 75% ;
+  width: 75%;
 }
 
+/* Ajustes responsivos */
 @media screen and (max-width: 768px) {
-.ul-mensajes {
-  height: 50vh;
-  width: 90%;
-}
+  .ul-mensajes {
+    height: 50vh;
+    width: 90%;
+  }
 
-.li-mensaje {
-  font-size: 12px;
-  padding: 5px 10px; 
-  max-width: 85%;
-}
+  .li-mensaje {
+    font-size: 12px;
+    padding: 5px 10px; 
+    max-width: 85%;
+  }
 
-.escritura-usuarios {
-  flex-direction: column;
-  width: 100%;
-}
+  .escritura-usuarios {
+    flex-direction: column;
+    width: 100%;
+  }
 
-.ul-usuarios {
-  display: none;
-}
+  .ul-usuarios {
+    display: none;
+  }
 }

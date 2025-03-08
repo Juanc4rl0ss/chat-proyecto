@@ -56,29 +56,23 @@ const UsoDeSockets = (url, colorPalette) => {
   };
 
   // ✅ Función para enviar el nombre de usuario
-  const handleSubmitNick = (tempNick, setNick, setErrorNick, setModalIsOpen) => {
+  const handleSubmitNick = (tempNick, setNick, setAvatar, setErrorNick, setModalIsOpen) => {
     if (!tempNick) {
-        if (typeof setErrorNick === 'function') {
-            setErrorNick('El nombre no puede estar vacío');
-        } else {
-            console.error("❌ setErrorNick no es una función:", setErrorNick);
-        }
+        setErrorNick('El nombre no puede estar vacío');
         return;
     }
 
     socketRef.current?.emit('new_user', tempNick, (response) => {
         if (response?.error) {
-            if (typeof setErrorNick === 'function') {
-                setErrorNick(response.error);
-            } else {
-                console.error("❌ setErrorNick no es una función:", setErrorNick);
-            }
+            setErrorNick(response.error);
         } else {
             setNick(tempNick);
+            setAvatar(response.avatar || null); // ✅ Guarda el avatar
             setModalIsOpen(false);
         }
     });
 };
+
 
 
   // ✅ Función para desconectar el socket

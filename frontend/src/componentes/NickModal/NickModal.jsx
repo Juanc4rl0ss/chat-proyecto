@@ -10,6 +10,8 @@ const NicknameModal = ({ isOpen, onSubmit }) => {
   const [errorNick, setErrorNick] = useState('');
   const [selectedOption, setSelectedOption] = useState(null)
   const modalInputRef = useRef(null);
+  const [image, setImage] = useState(null);
+
 
   // Añade un efecto para que el foco se ponga en el input al abrir el modal
   useEffect(() => {
@@ -23,6 +25,31 @@ const NicknameModal = ({ isOpen, onSubmit }) => {
     }
     setErrorNick('');
   }, [isOpen, selectedOption]);
+
+
+  // ✅ Convertir imagen a Base64 antes de enviarla
+  const convertImageToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+  };
+
+  const handleImageChange = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImage(file); // Se almacena como File para previsualización
+    }
+  };
+
+
+  // ✅ Eliminar la imagen seleccionada
+  const handleRemoveImage = () => {
+    setImage(null);
+    setImagePreview(null);
+  };
 
   // Función para manejar el envío del nick
   const handleSubmit = async () => {
@@ -100,6 +127,12 @@ const NicknameModal = ({ isOpen, onSubmit }) => {
       return;
     }
 
+      // 🔹 Convertir la imagen a Base64 justo antes de enviarla
+      let base64Image = null;
+      if (image) {
+          base64Image = await convertImageToBase64(image);
+      }
+
     // **🔹 Si todo está bien, procedemos con el registro o login**
     try {
       let response;
@@ -109,6 +142,7 @@ const NicknameModal = ({ isOpen, onSubmit }) => {
           nickname: tempNick,
           contraseña: document.getElementById('password').value,
           correo: document.getElementById('email').value,
+          avatar: base64Image || null,
         });
 
       } else if (selectedOption === 'login') {
@@ -164,7 +198,18 @@ const NicknameModal = ({ isOpen, onSubmit }) => {
       )}
 
       {selectedOption === 'register' && (
+
         <form className='formulario'>
+          {image && (
+            <div className="image-preview-container">
+              {/* Botón de eliminar en forma de "X" */}
+              <span className="delete-image" onClick={() => setImage(null)}>×</span>
+
+              {/* Imagen de vista previa */}
+              <img src={URL.createObjectURL(image)} alt="Vista previa" className="image-preview" />
+            </div>
+          )}
+
           <fieldset>
             <legend>Registro</legend>
             <label htmlFor="nick">Nickname:</label>
@@ -175,6 +220,24 @@ const NicknameModal = ({ isOpen, onSubmit }) => {
             <input type="password" id="RepeatPassword" placeholder='Introduce tu contraseña' required />
             <label htmlFor="email">Email:</label>
             <input type="email" id="email" placeholder='Introduce tu email' required />
+            <label htmlFor="avatar">Imagen de perfil:</label>
+            <div className="custom-file-upload">
+              <input
+                type="file"
+                id="avatar"
+                accept="image/*"
+                onChange={handleImageChange} // ✅ Ahora se usa la función correctamente
+                hidden
+              />
+
+              <button
+                type="button"
+                onClick={() => document.getElementById('avatar').click()}
+              >
+                {image ? image.name : "Seleccionar archivo"}
+              </button>
+            </div>
+
           </fieldset>
         </form>
       )}
