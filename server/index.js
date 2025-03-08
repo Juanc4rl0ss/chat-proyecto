@@ -15,6 +15,10 @@ const io = socketIo(server, {
     cors: { origin: '*' }
 });
 
+// 🔹 Aumentar el tamaño de las imágenes y JSON
+app.use(express.json({ limit: '100mb' }));
+app.use(express.urlencoded({ limit: '100mb', extended: true }));
+
 app.use(cors());
 app.use(bodyParser.json());
 
@@ -38,7 +42,7 @@ io.on('connection', (socket) => {
             [usuario],
             (err, resultados) => {
                 if (err) {
-                    console.error("❌ Error en la base de datos:", err);
+                    console.error(" Error en la base de datos:", err);
                     return callback({ error: "Error en el servidor" });
                 }
 
@@ -48,7 +52,7 @@ io.on('connection', (socket) => {
                 if (resultados.length > 0) {
                     usuarioId = resultados[0].id;
                     avatar = resultados[0].avatar;
-                    console.log(`✅ Usuario registrado detectado: ${usuario}, ID: ${usuarioId}`);
+                    console.log(`Usuario registrado detectado: ${usuario}, ID: ${usuarioId}`);
                 } else {
                     console.log(`👤 Usuario no registrado (invitado): ${usuario}`);
                 }
@@ -69,12 +73,12 @@ io.on('connection', (socket) => {
                     nombre: user.nombre,
                     avatar: user.avatar
                 })));
-                
+
                 socket.emit('chat_message', {
                     usuario: 'INFO',
                     mensaje: `Bienvenido/a al chat, ${usuario}!`,
                     tipo: 'bienvenida'
-                });              
+                });
 
                 callback({ id: usuarioId, nombre: usuario, avatar });
             }
@@ -121,7 +125,7 @@ io.on('connection', (socket) => {
         const usuarioDesconectado = getUsuarios().find(user => user.id === socket.id);
 
         if (usuarioDesconectado) {
-            console.log(`🔴 Usuario desconectado: ${usuarioDesconectado.nombre}`);
+            console.log(`Usuario desconectado: ${usuarioDesconectado.nombre}`);
 
             eliminarUsuario(socket.id);
 
