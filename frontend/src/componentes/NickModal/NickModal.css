@@ -128,3 +128,18 @@ legend {
     width: 100%;
     max-width: 250px;
 }
+.custom-file-upload button {
+    margin-top: 10px;
+    background-color: #007bff;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  .custom-file-upload button:hover {
+    background-color: #0056b3;
+  }
+  

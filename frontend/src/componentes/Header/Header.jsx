@@ -3,7 +3,6 @@ import './Header.css';
 
 const Header = ({ nick, modalIsOpen, setModalIsOpen, desconectarSocket }) => {
   const handleLogout = () => {
-    desconectarSocket(); // ✅ Desconectar el usuario del socket
     window.location.reload(); // ✅ Recargar la página
   };
 

@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../config/db');
 const bcrypt = require('bcrypt');
-const { usuarios } = require('../index');
+const { getUsuarios } = require('../usuarios'); 
 
 // Ruta para registrar un nuevo usuario
 router.post('/registrar', (req, res) => {
@@ -91,11 +91,15 @@ router.post('/iniciar-sesion', (req, res) => {
 router.get('/verificar', (req, res) => {
     const { nickname } = req.query;
 
+    console.log('Ruta /verificar fue accedida');
+    console.log('Datos recibidos:', req.query);
+
     if (!nickname) {
         return res.status(400).json({ error: 'El nickname es obligatorio' });
     }
 
-    // Verificar si el nickname existe en la base de datos
+    const usuarios = getUsuarios(); // ✅ Ahora `usuarios` siempre está actualizado
+
     db.query('SELECT * FROM usuarios WHERE nickname = ?', [nickname], (err, resultados) => {
         if (err) {
             console.error('Error al verificar el nickname:', err);
@@ -103,11 +107,14 @@ router.get('/verificar', (req, res) => {
         }
 
         const existeEnBD = resultados.length > 0;
+        console.log(`El nickname ${nickname} ${existeEnBD ? 'existe' : 'no existe'} en la base de datos`);
+        console.log('Usuarios en uso:', usuarios);
         const estaEnUso = usuarios.some(user => user.nombre.toLowerCase() === nickname.toLowerCase());
 
         res.json({ existe: existeEnBD, enUso: estaEnUso });
     });
 });
+
 
 // Ruta para obtener los datos de un usuario
 module.exports = router;

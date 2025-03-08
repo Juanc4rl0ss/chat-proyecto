@@ -8,7 +8,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const nicksRoutes = require('./rutas/nicks'); // Rutas de registro y login
 const db = require('./config/db'); // Conexión a la base de datos
-
+const { getUsuarios, agregarUsuario, eliminarUsuario } = require('./usuarios'); //
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
@@ -31,63 +31,50 @@ io.on('connection', (socket) => {
     socket.emit('chat_history', mensajes.slice(-15));
 
     socket.on('new_user', (usuario, callback) => {
-        console.log("Se ha conectado un cliente");
+        console.log("🔹 Se ha conectado un cliente:", usuario);
 
-        // Verificar si el usuario ya está en la lista de conectados
-        let usuarioExistente = usuarios.find(user => user.nombre === usuario);
-    
-        // Si el usuario ya existe, se manda un error al cliente
-        if (usuarioExistente) {
-            return callback({
-                error: 'El usuario ya existe. Por favor, elija otro nombre.'
-            });
-        }
-    
-        // Verificar en la base de datos si el usuario está registrado
         db.query(
             "SELECT id FROM usuarios WHERE nickname = ?",
             [usuario],
             (err, resultados) => {
                 if (err) {
-                    console.error(" Error en la base de datos:", err);
+                    console.error("❌ Error en la base de datos:", err);
                     return callback({ error: "Error en el servidor" });
                 }
-    
-                let usuarioId = null;
-    
-                if (resultados.length > 0) {
-                    usuarioId = resultados[0].id; // Si el usuario está registrado, obtenemos su ID
-                    console.log(` Usuario registrado detectado: ${usuario}, ID: ${usuarioId}`);
-                } else {
-                    console.log(`Usuario no registrado (invitado): ${usuario}`);
-                }
-    
-                // Verificamos si el usuario ya existe en la lista de usuarios conectados
-                let nuevoUsuario = { id: socket.id, nombre: usuario, usuarioId };
-                usuarios.push(nuevoUsuario);
-    
-                // Notificar a los demás usuarios sobre la conexión
-                socket.broadcast.emit('chat_message', {
-                    usuario: 'INFO',
-                    mensaje: `${usuario} se ha conectado`
-                });
 
-                // Enviar la lista de usuarios conectados a todos los clientes
-                io.emit('user_list', usuarios.map(user => user.nombre));
-    
-                // Emitir mensaje al usuario que se conecta
+                let usuarioId = null;
+                if (resultados.length > 0) {
+                    usuarioId = resultados[0].id;
+                    console.log(`✅ Usuario registrado detectado: ${usuario}, ID: ${usuarioId}`);
+                } else {
+                    console.log(`👤 Usuario no registrado (invitado): ${usuario}`);
+                }
+
+                // Verificar si el usuario ya está en la lista
+                let usuarioExistente = getUsuarios().find(user => user.nombre.toLowerCase() === usuario.toLowerCase());
+
+                if (usuarioExistente) {
+                    return callback({ error: 'Este usuario ya está en uso. Elige otro nombre.' });
+                }
+
+                // Agregar usuario
+                agregarUsuario({ id: socket.id, nombre: usuario, usuarioId });
+
+                console.log(`👥 Lista actualizada de usuarios:`, getUsuarios().map(user => user.nombre));
+
+                io.emit('user_list', getUsuarios().map(user => user.nombre));
+
                 socket.emit('chat_message', {
                     usuario: 'INFO',
-                    mensaje: `Ha ingresado en el chat ${usuario}`,
+                    mensaje: `Bienvenido/a al chat, ${usuario}!`,
                     tipo: 'bienvenida'
-                });
-    
-                // Llama al callback con el id de usuario si está registrado
-                // Si está registrado, el id se pasará como valor; de lo contrario, será null
+                });              
+
                 callback({ id: usuarioId, nombre: usuario });
             }
         );
-    });    
+    });
+
 
     // Evento para manejar el envío de mensajes
     socket.on('chat_message', (data) => {
@@ -96,7 +83,7 @@ io.on('connection', (socket) => {
         if (mensajes.length > 100) {
             mensajes.shift();
         }
-    
+
         // Buscar en `usuarios[]` para obtener su `usuarioId`
         const usuarioEncontrado = usuarios.find(
             (user) => user.nombre === data.usuario
@@ -104,9 +91,9 @@ io.on('connection', (socket) => {
 
         // Si el usuario está registrado, obtenemos su ID; de lo contrario, será null
         let usuarioId = usuarioEncontrado ? usuarioEncontrado.usuarioId : null;
-        let nickname =  data.usuario;    
+        let nickname = data.usuario;
         let mensaje = data.mensaje;
-    
+
         // Guardar en la base de datos
         db.query(
             "INSERT INTO chat_history (user_id, nickname, message) VALUES (?, ?, ?)",
@@ -119,24 +106,24 @@ io.on('connection', (socket) => {
                 console.log(" Mensaje guardado en la BD");
             }
         );
-    
+
         // Enviar el mensaje a todos los clientes conectados (esto NO cambia)
         io.emit("chat_message", { ...data, usuarioId });
-    });    
+    });
 
     // Evento que se dispara cuando un cliente se desconecta
     socket.on('disconnect', () => {
-        const usuarioDesconectado = usuarios.find(user => user.id === socket.id);
+        const usuarioDesconectado = getUsuarios().find(user => user.id === socket.id);
 
         if (usuarioDesconectado) {
-            usuarios = usuarios.filter(user => user.id !== socket.id);
-            io.emit('user_list', usuarios.map(user => user.nombre));
+            console.log(`🔴 Usuario desconectado: ${usuarioDesconectado.nombre}`);
 
-            // Notificar a los demás usuarios que alguien se desconectó
-            io.emit('chat_message', {
-                usuario: 'INFO',
-                mensaje: `${usuarioDesconectado.nombre} se ha desconectado`
-            });
+            eliminarUsuario(socket.id);
+
+            console.log(`👥 Lista de usuarios actualizada:`, getUsuarios().map(user => user.nombre));
+
+            io.emit('user_list', getUsuarios().map(user => user.nombre));
+            io.emit('chat_message', { usuario: 'INFO', mensaje: `${usuarioDesconectado.nombre} se ha desconectado` });
         }
     });
 });
