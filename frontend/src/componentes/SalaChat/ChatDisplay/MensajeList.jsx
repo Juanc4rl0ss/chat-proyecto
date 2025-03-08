@@ -48,7 +48,22 @@ const MensajeList = ({ mensajes, fontSize, fontFamily, nick, mensajesRef, usuari
                   )
                 )}
                 <span style={{ color: userColor, fontWeight: 'bold' }}>{mensaje.usuario}</span>: {' '}
-                {mensaje.mensaje}
+                {
+                  mensaje.tipo === 'audio' ? (
+                    <audio controls>
+                      <source src={`data:audio/webm;base64,${mensaje.mensaje}`} type="audio/webm" />
+                      Tu navegador no soporta el elemento de audio.
+                    </audio>
+                  ) : mensaje.tipo === 'imagen' ? (
+                    <img
+                      src={`data:image/jpeg;base64,${mensaje.mensaje}`}
+                      alt="imagen enviada"
+                      style={{ maxWidth: '200px', maxHeight: '200px' }}
+                    />
+                  ) : (
+                    mensaje.mensaje
+                  )
+                }
               </div>
             </li>
           );
@@ -62,7 +77,7 @@ const MensajeList = ({ mensajes, fontSize, fontFamily, nick, mensajesRef, usuari
           <li key={index} style={{ color: userColors[usuario.nombre] || getRandomColor() }}>
             <span className="user-icon">
               {usuario.avatar ? (
-                <img src={usuario.avatar} alt={usuario.nombre} />
+                <img src={usuario.avatar} alt={usuario.nombre} width="30" height="30" style={{ borderRadius: '50%' }} />
               ) : (
                 <span className="default-avatar">👤</span>
               )}
@@ -71,7 +86,6 @@ const MensajeList = ({ mensajes, fontSize, fontFamily, nick, mensajesRef, usuari
           </li>
         ))}
       </ul>
-
     </div>
   );
 };
