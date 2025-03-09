@@ -3,7 +3,8 @@ import './Header.css';
 
 const Header = ({ nick, avatar, modalIsOpen, setModalIsOpen, desconectarSocket }) => {
   const handleLogout = () => {
-    window.location.reload(); // ✅ Recargar la página
+    // Desconectar el socket y recargar la página
+    window.location.reload();
   };
 
   return (
@@ -11,7 +12,7 @@ const Header = ({ nick, avatar, modalIsOpen, setModalIsOpen, desconectarSocket }
       <h1>Bienvenido/a al Chat</h1>
       {nick && !modalIsOpen && (
         <div className="user-info">
-          {/* ✅ Mostrar imagen si existe, sino mostrar ícono por defecto */}
+          {/* Mostrar imagen si existe, sino mostrar ícono por defecto */}
           
           {avatar ? (
             

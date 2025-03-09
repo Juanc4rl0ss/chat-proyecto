@@ -35,13 +35,13 @@
   display: flex;
   align-items: center;
   gap: 5px;
-  width: 100%; /* Ocupar el ancho disponible */
-  justify-content: flex-start; /* Alineación izquierda */
+  width: 100%; 
+  justify-content: flex-start; 
 }
 
 /* Contenedor del icono o avatar */
 .user-icon {
-  width: 30px;  /* Tamaño uniforme */
+  width: 30px; 
   height: 30px;
   display: flex;
   align-items: center;
@@ -57,7 +57,7 @@
 
 /* Ajuste para nombres de usuario */
 .user-name {
-  min-width: 80px; /* Mantiene una alineación uniforme */
+  min-width: 80px;
   text-align: left;
   white-space: nowrap;
 }

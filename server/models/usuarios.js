@@ -1,11 +1,11 @@
-let usuarios = []; // Lista global de usuarios conectados
+// Creamos un array para guardar los usuarios conectados al chat
+let usuarios = [];
 
-const getUsuarios = () => usuarios; // Función para obtener usuarios en tiempo real
-
+// Exportamos las funciones para obtener, agregar y eliminar usuarios
+const getUsuarios = () => usuarios;
 const agregarUsuario = (usuario) => {
     usuarios.push(usuario);
 };
-
 const eliminarUsuario = (socketId) => {
     usuarios = usuarios.filter(user => user.id !== socketId);
 };

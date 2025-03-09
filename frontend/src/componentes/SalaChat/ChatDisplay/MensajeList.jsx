@@ -2,28 +2,33 @@ import { useEffect, useState } from 'react';
 import './MensajeList.css'; // Importamos el archivo CSS
 
 const MensajeList = ({ mensajes, fontSize, fontFamily, nick, mensajesRef, usuarios }) => {
-  const [userColors, setUserColors] = useState({}); // 🔹 Estado para guardar los colores asignados
+  
+  // Estado para almacenar los colores de los usuarios
+  const [userColors, setUserColors] = useState({});
 
+  // Actualizar el scroll de mensajes al final, en caso de que haya nuevos mensajes
   useEffect(() => {
     if (mensajesRef.current) {
       mensajesRef.current.scrollTop = mensajesRef.current.scrollHeight;
     }
   }, [mensajes]);
 
+  // Asignar un color aleatorio a los usuarios que no tengan uno
   useEffect(() => {
-    // 🔹 Asignar colores solo a nuevos usuarios y mantener los existentes
     setUserColors(prevColors => {
       const newColors = { ...prevColors };
       usuarios.forEach(user => {
         if (!newColors[user.nombre]) {
-          newColors[user.nombre] = getRandomColor(); // Asigna color solo a nuevos usuarios
+
+          // Agregamos color solo si el usuario no tiene uno asignado
+          newColors[user.nombre] = getRandomColor();
         }
       });
       return newColors;
     });
   }, [usuarios]);
 
-  // ✅ Función para obtener un color aleatorio de la paleta
+  // Función para obtener un color aleatorio de la paleta
   const colorPalette = ['#1F77B4', '#FF7F0E', '#2CA02C', '#D62728', '#9467BD', '#8C564B', '#E377C2', '#7F7F7F', '#BCBD22', '#17BECF'];
   const getRandomColor = () => colorPalette[Math.floor(Math.random() * colorPalette.length)];
 

@@ -2,10 +2,10 @@
   "name": "server",
   "version": "1.0.0",
   "description": "Servidor backend para el chat",
-  "main": "index.js",
+  "main": "./sockets/sockets.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js"
+    "start": "node ./sockets/sockets.js",
+    "dev": "nodemon ./sockets/sockets.js"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",

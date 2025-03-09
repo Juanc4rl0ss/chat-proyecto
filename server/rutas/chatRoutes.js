@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../config/db');
 const bcrypt = require('bcrypt');
-const { getUsuarios } = require('../usuarios');
+const { getUsuarios } = require('../models/usuarios');
 
 // Ruta para registrar un nuevo usuario
 router.post('/registrar', (req, res) => {
@@ -106,18 +106,19 @@ router.get('/verificar', (req, res) => {
     if (!nickname) {
         return res.status(400).json({ error: 'El nickname es obligatorio' });
     }
+    // Obtenemos los usuarios conectados al chat
+    const usuarios = getUsuarios();
 
-    const usuarios = getUsuarios(); // ✅ Ahora `usuarios` siempre está actualizado
-
+    // Verificar si el nick ya existe en la base de datos
     db.query('SELECT * FROM usuarios WHERE nickname = ?', [nickname], (err, resultados) => {
         if (err) {
             console.error('Error al verificar el nickname:', err);
             return res.status(500).json({ error: 'Error en la base de datos' });
         }
 
-        const existeEnBD = resultados.length > 0;
-        console.log(`El nickname ${nickname} ${existeEnBD ? 'existe' : 'no existe'} en la base de datos`);
-        console.log('Usuarios en uso:', usuarios);
+        // Si el nickname existe en la base de datos y no está en uso, enviar `existe: true`
+        // Si el nickname no existe en la base de datos, enviar `existe: false`
+        const existeEnBD = resultados.length > 0; 
         const estaEnUso = usuarios.some(user => user.nombre.toLowerCase() === nickname.toLowerCase());
 
         res.json({ existe: existeEnBD, enUso: estaEnUso });
