@@ -4,8 +4,8 @@
 
 Abre una terminal y ejecuta:
 
-git clone https://github.com/Juanc4rl0ss/proyecto-final-chat.git
-cd proyecto-final-chat
+git clone https://github.com/Juanc4rl0ss/chat-proyecto
+cd chat-proyecto
 
 2️⃣ Configurar y ejecutar el frontend
 
