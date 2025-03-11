@@ -277,7 +277,11 @@ const NicknameModal = ({ isOpen, onSubmit }) => {
                 type="button"
                 onClick={() => document.getElementById("avatar").click()}
               >
-                {image ? image.name : "Seleccionar archivo"}
+                {image
+                  ? image.name.length > 15
+                    ? `${image.name.substring(0, 15)}...`
+                    : image.name
+                  : "Seleccionar archivo"}
               </button>
             </div>
 
