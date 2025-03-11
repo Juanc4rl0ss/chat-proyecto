@@ -26,7 +26,7 @@ app.use(bodyParser.json());
 app.use("/api/nicks", nicksRoutes);
 
 // WebSocket logic
-let mensajes = []; // Almacena el historial de mensajes
+let mensajes = [];
 
 // Evento que se dispara cuando un cliente se conecta al servidor
 io.on("connection", (socket) => {

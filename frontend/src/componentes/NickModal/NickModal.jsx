@@ -90,7 +90,7 @@ const NicknameModal = ({ isOpen, onSubmit }) => {
     if (
       selectedOption === "register" &&
       document.getElementById("password").value !==
-        document.getElementById("RepeatPassword").value
+      document.getElementById("RepeatPassword").value
     ) {
       setErrorNick("Las contraseñas no coinciden.");
       return;
@@ -190,7 +190,7 @@ const NicknameModal = ({ isOpen, onSubmit }) => {
     // Renderizamos el modal mientras esté abierto y isOpen sea true
     <Modal
       isOpen={isOpen}
-      onRequestClose={() => {}}
+      onRequestClose={() => { }}
       contentLabel="Introduce tu nick"
       className="Modal"
       overlayClassName="Overlay"
@@ -230,7 +230,7 @@ const NicknameModal = ({ isOpen, onSubmit }) => {
 
           <fieldset>
             <legend>Registro</legend>
-            <label htmlFor="nick">Nickname:</label>
+            <label htmlFor="nick">Nickname: <span style={{ color: "red" }}>*</span></label>
             <input
               type="text"
               id="nick"
@@ -239,28 +239,32 @@ const NicknameModal = ({ isOpen, onSubmit }) => {
               onChange={(e) => setTempNick(e.target.value)}
               required
             />
-            <label htmlFor="password">Contraseña:</label>
+
+            <label htmlFor="password">Contraseña: <span style={{ color: "red" }}>*</span></label>
             <input
               type="password"
               id="password"
               placeholder="Introduce tu contraseña"
               required
             />
-            <label htmlFor="RepeatPassword">Repite la contraseña:</label>
+
+            <label htmlFor="RepeatPassword">Repite la contraseña: <span style={{ color: "red" }}>*</span></label>
             <input
               type="password"
               id="RepeatPassword"
               placeholder="Introduce tu contraseña"
               required
             />
-            <label htmlFor="email">Email:</label>
+
+            <label htmlFor="email">Email: <span style={{ color: "red" }}>*</span></label>
             <input
               type="email"
               id="email"
               placeholder="Introduce tu email"
               required
             />
-            <label htmlFor="avatar">Imagen de perfil:</label>
+
+            <label htmlFor="avatar">Imagen de perfil (opcional):</label>
             <div className="custom-file-upload">
               <input
                 type="file"
@@ -269,7 +273,6 @@ const NicknameModal = ({ isOpen, onSubmit }) => {
                 onChange={handleImageChange}
                 hidden
               />
-
               <button
                 type="button"
                 onClick={() => document.getElementById("avatar").click()}
@@ -277,7 +280,11 @@ const NicknameModal = ({ isOpen, onSubmit }) => {
                 {image ? image.name : "Seleccionar archivo"}
               </button>
             </div>
+
+            {/* Mensaje indicando los campos obligatorios */}
+            <p style={{ fontSize: "14px", color: "red", marginTop: "10px" }}>* Campos obligatorios</p>
           </fieldset>
+
         </form>
       )}
 
