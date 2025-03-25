@@ -38,7 +38,7 @@ router.post('/registrar', (req, res) => {
 
         // Insertar el nuevo usuario en la base de datos con avatar (si existe)
         db.query(
-            'INSERT INTO usuarios (`nickname`, `contraseña`, `correo`, `avatar`) VALUES (?, ?, ?, ?)',
+            'INSERT INTO usuarios (`nickname`, `contrasena`, `correo`, `avatar`) VALUES (?, ?, ?, ?)',
             [nickname, contraseñaEncriptada, correo, avatarFinal],
             (err, resultados) => {
 
@@ -65,7 +65,7 @@ router.post('/iniciar-sesion', (req, res) => {
     }
 
     // Seleccionar solo `id`, `nickname` y `contraseña` para mejorar eficiencia
-    db.query('SELECT id, nickname, contraseña FROM usuarios WHERE nickname = ?', [nickname], (err, resultados) => {
+    db.query('SELECT id, nickname, contrasena FROM usuarios WHERE nickname = ?', [nickname], (err, resultados) => {
         if (err) {
             console.error(' Error en la base de datos al verificar las credenciales:', err);
             return res.status(500).json({ error: 'Error en la base de datos' });
