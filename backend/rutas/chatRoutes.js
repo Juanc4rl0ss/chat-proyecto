@@ -55,46 +55,46 @@ router.post('/registrar', (req, res) => {
 });
 
 
-// Ruta para iniciar sesión de un usuario
 router.post('/iniciar-sesion', (req, res) => {
-
     const { nickname, contraseña } = req.body;
-    // Validación de los datos recibidos
+
+    console.log('Datos de inicio de sesión recibidos:', req.body);
+
     if (!nickname || !contraseña) {
         return res.status(400).json({ error: 'Todos los campos son obligatorios' });
     }
 
-    // Seleccionar solo `id`, `nickname` y `contraseña` para mejorar eficiencia
     db.query('SELECT id, nickname, contrasena FROM usuarios WHERE nickname = ?', [nickname], (err, resultados) => {
         if (err) {
             console.error(' Error en la base de datos al verificar las credenciales:', err);
             return res.status(500).json({ error: 'Error en la base de datos' });
         }
 
-        // Si no se encontró el usuario, enviar error
+        console.log('Resultado de la búsqueda en la base de datos:', resultados);
+
         if (resultados.length === 0) {
             return res.status(400).json({ error: 'Nick o contraseña incorrectos' });
         }
 
-        const usuario = resultados[0]; // 🔹 Contiene `id`, `nickname` y `contraseña`
+        const usuario = resultados[0];
 
-        // Comparar la contraseña encriptada con la recibida
-        const contraseñaCorrecta = bcrypt.compareSync(contraseña, usuario.contraseña);
+        const contraseñaCorrecta = bcrypt.compareSync(contraseña, usuario.contrasena);
 
-        // Si la contraseña es incorrecta, enviar error
+        console.log('¿Contraseña correcta?', contraseñaCorrecta);  // Aquí logueamos el resultado de la comparación
+
         if (!contraseñaCorrecta) {
             return res.status(400).json({ error: 'Nick o contraseña incorrectos' });
         }
 
         console.log(`Usuario autenticado con éxito: ${usuario.nickname}, ID: ${usuario.id}`);
 
-        // Enviar `id` en la respuesta para que el frontend lo almacene
         res.status(200).json({
             mensaje: 'Usuario autenticado con éxito',
             id: usuario.id
         });
     });
 });
+
 
 // Ruta para verificar si el nick ya existe antes de permitir entrar como invitado
 router.get('/verificar', (req, res) => {
