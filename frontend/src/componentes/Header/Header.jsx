@@ -12,20 +12,20 @@ const Header = ({ nick, avatar, modalIsOpen, setModalIsOpen, desconectarSocket }
       <h1>Bienvenido/a al Chat</h1>
       {nick && !modalIsOpen && (
         <div className="user-info">
-          {/* Mostrar imagen si existe, sino mostrar ícono por defecto */}
-          
-          {avatar ? (
-            
-            <img src={avatar} alt="Avatar" className="user-avatar" />
-          ) : (
-            <span className="user-avatar-placeholder">👤</span>
-          )}
-          
-          <span className="user-name">{nick}</span>
-          <button className="logout-button" onClick={handleLogout}>
-            Salir
-          </button>
-        </div>
+        <button className="logout-button mini" onClick={handleLogout} aria-label="Salir">
+          ✖
+        </button>
+      
+        {avatar ? (
+          <img src={avatar} alt="Avatar" className="user-avatar" />
+        ) : (
+          <span className="user-avatar-placeholder">👤</span>
+        )}
+       <span className="user-name">{nick.length > 10 ? nick.slice(0,10) + "..." : nick}
+       </span>
+
+      </div>
+      
       )}
     </header>
   );
