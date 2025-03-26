@@ -52,11 +52,8 @@ io.on("connection", (socket) => {
         if (resultados.length > 0) {
           usuarioId = resultados[0].id;
           avatar = resultados[0].avatar;
-          console.log(
-            `Usuario registrado detectado: ${usuario}, ID: ${usuarioId}`
-          );
+       
         } else {
-          console.log(`👤 Usuario no registrado (invitado): ${usuario}`);
         }
 
         // Verificar si el usuario ya está en la lista
@@ -72,8 +69,6 @@ io.on("connection", (socket) => {
 
         // Agregar usuario
         agregarUsuario({ id: socket.id, nombre: usuario, usuarioId, avatar });
-
-        console.log("👥 Lista actualizada de usuarios:", getUsuarios());
 
         io.emit(
           "user_list",
@@ -161,9 +156,6 @@ io.on("connection", (socket) => {
           console.error("Error al guardar el mensaje en la BD:", error);
           return;
         }
-        console.log(
-          `Mensaje guardado en la BD con usuario_id: ${usuarioId}`
-        );
       }
     );
   }
@@ -178,11 +170,6 @@ io.on("connection", (socket) => {
       console.log(`Usuario desconectado: ${usuarioDesconectado.nombre}`);
 
       eliminarUsuario(socket.id);
-
-      console.log(
-        `👥 Lista de usuarios actualizada:`,
-        getUsuarios().map((user) => user.nombre)
-      );
 
       io.emit(
         "user_list",

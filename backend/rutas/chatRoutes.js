@@ -6,8 +6,6 @@ const { getUsuarios } = require('../models/usuarios');
 
 // Ruta para registrar un nuevo usuario
 router.post('/registrar', (req, res) => {
-    console.log('Ruta /registrar fue accedida');
-    console.log('Datos recibidos:', req.body);
 
     // Extraer datos del cuerpo de la solicitud
     const { nickname, contraseña, correo, avatar } = req.body;
@@ -70,8 +68,6 @@ router.post('/iniciar-sesion', (req, res) => {
             return res.status(500).json({ error: 'Error en la base de datos' });
         }
 
-        console.log('Resultado de la búsqueda en la base de datos:', resultados);
-
         if (resultados.length === 0) {
             return res.status(400).json({ error: 'Nick o contraseña incorrectos' });
         }
@@ -79,8 +75,6 @@ router.post('/iniciar-sesion', (req, res) => {
         const usuario = resultados[0];
 
         const contraseñaCorrecta = bcrypt.compareSync(contraseña, usuario.contrasena);
-
-        console.log('¿Contraseña correcta?', contraseñaCorrecta);  // Aquí logueamos el resultado de la comparación
 
         if (!contraseñaCorrecta) {
             return res.status(400).json({ error: 'Nick o contraseña incorrectos' });
@@ -99,9 +93,6 @@ router.post('/iniciar-sesion', (req, res) => {
 // Ruta para verificar si el nick ya existe antes de permitir entrar como invitado
 router.get('/verificar', (req, res) => {
     const { nickname } = req.query;
-
-    console.log('Ruta /verificar fue accedida');
-    console.log('Datos recibidos:', req.query);
 
     if (!nickname) {
         return res.status(400).json({ error: 'El nickname es obligatorio' });

@@ -32,7 +32,7 @@ USE proyectochat;
 CREATE TABLE `usuarios` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
   `nickname` varchar(20) NOT NULL,
-  `contraseña` varchar(200) NOT NULL,
+  `contrasena` varchar(200) NOT NULL,
   `correo` varchar(200) NOT NULL,
   `avatar` LONGTEXT DEFAULT NULL,
   PRIMARY KEY (`Id`)
