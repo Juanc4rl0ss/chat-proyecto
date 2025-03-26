@@ -197,9 +197,9 @@ const NicknameModal = ({ isOpen, onSubmit }) => {
     >
       <div className="botones-container">
         <button onClick={() => setSelectedOption("register")}>
-          Registrar nick
+          Registro
         </button>
-        <button onClick={() => setSelectedOption("login")}>Loguear nick</button>
+        <button onClick={() => setSelectedOption("login")}>Login</button>
         <button onClick={() => setSelectedOption("guest")}>Invitado</button>
       </div>
 

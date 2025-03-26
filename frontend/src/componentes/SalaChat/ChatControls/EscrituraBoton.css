@@ -130,13 +130,12 @@
 
 @media (max-width: 480px) {
   .escribir-texto {
-    max-width: 140px; 
+    max-width: 100px; 
+    max-height: 20px;
     flex-shrink: 1;
   }
-
   .contenedor-fuente {
     flex-wrap: wrap;
     gap: 8px;
-    justify-content: center;
   }
 }

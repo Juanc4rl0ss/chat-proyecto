@@ -24,7 +24,7 @@
   margin-left: 10px;
   color: black;
   font-weight: bold;
-  text-align: center;
+  text-align: left;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -90,11 +90,25 @@
   width: 75%;
 }
 
+.usuario-nombre {
+  font-weight: bold;
+  white-space: nowrap;
+}
+.mensaje-texto {
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  word-break: break-word; /* 👈 Este es el que soluciona lo de palabras sin espacios */
+  text-align: left;
+}
+
+
 /* Ajustes responsivos */
 @media screen and (max-width: 768px) {
   .ul-mensajes {
     height: 50vh;
     width: 90%;
+    margin: 0 auto;
+    margin-bottom: 20px;
   }
 
   .li-mensaje {
