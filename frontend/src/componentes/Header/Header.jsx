@@ -21,7 +21,9 @@ const Header = ({ nick, avatar, modalIsOpen, setModalIsOpen, desconectarSocket }
         ) : (
           <span className="user-avatar-placeholder">👤</span>
         )}
-        <span className="user-name">{nick}</span>
+       <span className="user-name">{nick.length > 10 ? nick.slice(0,10) + "..." : nick}
+       </span>
+
       </div>
       
       )}

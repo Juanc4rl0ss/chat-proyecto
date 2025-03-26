@@ -5,7 +5,7 @@
   padding: 15px 20px;
   background-color: #1E1E2F;
   color: white;
-  width: 75%;
+  width: 85%;
   margin-bottom: 20px;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
@@ -17,6 +17,7 @@
   margin: 0;
   font-size: 22px;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  padding-right: 10px;
 }
 
 .user-info {
@@ -32,7 +33,7 @@
   font-size: 16px;
   font-weight: bold;
   color: #F0E68C;
-  max-width: 5ch; /* Mostrar solo 5 caracteres */
+  max-width: 5ch;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -119,8 +120,8 @@
   background-color: #D9534F;
   color: white;
   border: none;
-  width: 24px;
-  height: 24px;
+  width: 14px;
+  height: 14px;
   border-radius: 4px;
   font-size: 14px;
   line-height: 1;
