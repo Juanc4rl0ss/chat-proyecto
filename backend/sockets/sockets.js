@@ -13,7 +13,7 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
-    origin: "http://frontend:8080",  // Aquí usas "frontend" en lugar de "localhost" para que Docker resuelva correctamente
+    origin: "http://ip172-18-0-6-cvhv4bq91nsg00bavr40-8080.direct.labs.play-with-docker.com/",  // Aquí usas "frontend" en lugar de "localhost" para que Docker resuelva correctamente
     methods: ["GET", "POST"],
     allowedHeaders: ["Content-Type"],
     credentials: true  // Si estás usando cookies o sesiones
