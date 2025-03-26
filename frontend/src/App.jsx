@@ -12,9 +12,9 @@ import io from 'socket.io-client';
 Modal.setAppElement('#root');
 
 // En el archivo frontend, cambia esto
-const socket = io('http://ip172-18-0-6-cvhv4bq91nsg00bavr40-3000.direct.labs.play-with-docker.com/');
+const socket = io('http://ip172-18-0-55-cvi1vviim2rg00d26a90-3000.direct.labs.play-with-docker.com/');
 // en lugar de 'http://backend:3000'
-const url = 'http://ip172-18-0-6-cvhv4bq91nsg00bavr40-3000.direct.labs.play-with-docker.com/';
+const url = 'http://ip172-18-0-55-cvi1vviim2rg00d26a90-3000.direct.labs.play-with-docker.com/;
 
 const colorPalette = [
   '#1F77B4', '#FF7F0E', '#2CA02C', '#D62728', '#9467BD',
