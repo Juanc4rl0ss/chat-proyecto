@@ -1,12 +1,12 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react-swc'
 
-// https://vitejs.dev/config/
 export default defineConfig({
+  base: './',
   plugins: [react()],
   server: {
     proxy: {
-      '/api': 'http://localhost:3000' // Redirige las solicitudes que comienzan con /api al backend
+      '/api': 'http://localhost:3000' // solo para desarrollo local
     }
   }
 })
