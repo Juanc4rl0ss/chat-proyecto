@@ -12,8 +12,14 @@ const { getUsuarios, agregarUsuario, eliminarUsuario } = require("../models/usua
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
-  cors: { origin: "*" },
+  cors: {
+    origin: "http://frontend:8080", 
+    methods: ["GET", "POST"],
+    allowedHeaders: ["Content-Type"],
+    credentials: true  
+  }
 });
+
 
 // 🔹 Aumentar el tamaño de las imágenes y JSON
 app.use(express.json({ limit: "100mb" }));
