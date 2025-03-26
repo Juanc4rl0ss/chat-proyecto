@@ -5,7 +5,7 @@
   padding: 15px 20px;
   background-color: #1E1E2F;
   color: white;
-  width:75%;
+  width: 75%;
   margin-bottom: 20px;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
@@ -22,8 +22,8 @@
 .user-info {
   display: flex;
   align-items: center;
-  gap: 20px; /* Aumenta la separación entre el nombre y el botón */
-  background: rgba(255, 255, 255, 0.1); /* Fondo semitransparente para mejor visibilidad */
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.1);
   padding: 8px 15px;
   border-radius: 8px;
 }
@@ -31,7 +31,7 @@
 .user-name {
   font-size: 16px;
   font-weight: bold;
-  color: #F0E68C; /* Un color amarillo suave para destacar */
+  color: #F0E68C;
 }
 
 .logout-button {
@@ -45,16 +45,15 @@
   height: 35px;
   border-radius: 5px;
   transition: background 0.3s ease, transform 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
 }
 
 .logout-button:hover {
   background-color: #B52B27;
   transform: scale(1.05);
-}
-.user-info {
-  display: flex;
-  align-items: center;
-  gap: 10px;
 }
 
 .user-avatar {
@@ -66,4 +65,78 @@
 
 .user-avatar-placeholder {
   font-size: 30px;
+}
+
+.logout-icon {
+  display: none;
+}
+
+@media (max-width: 480px) {
+  .user-info {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    flex-wrap: nowrap;
+  }
+
+  .user-name {
+    font-size: 14px;
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .logout-button {
+    width: 35px;
+    height: 35px;
+    padding: 0;
+    border-radius: 5px;
+    min-width: unset;
+    flex-shrink: 0;
+  }
+
+  .logout-icon {
+    display: inline;
+    font-size: 18px;
+  }
+
+  .logout-text {
+    display: none;
+  }
+}
+
+.logout-button.mini {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: #D9534F;
+  color: white;
+  border: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  font-size: 14px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  z-index: 1;
+  cursor: pointer;
+}
+
+.logout-button.mini:hover {
+  background-color: #b52b27;
+}
+
+.user-info {
+  position: relative;
+}
+.user-name {
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

@@ -23,6 +23,20 @@ const EscrituraBoton = ({
   const pickerRef = useRef(null);
   const inputRef = useRef(null);
   const mediaRecorderRef = useRef(null);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 480);
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 480);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    if (isMobile) {
+      setFontSize('12px');
+    }
+  }, [isMobile]);
 
   // Efecto para enfocar automáticamente el input después de que el nick se ha establecido
   useEffect(() => {
@@ -99,7 +113,7 @@ const EscrituraBoton = ({
           const canvas = document.createElement('canvas');
           let width = img.width;
           let height = img.height;
-  
+
           if (width > height) {
             if (width > maxWidth) {
               height *= maxWidth / width;
@@ -111,30 +125,30 @@ const EscrituraBoton = ({
               height = maxHeight;
             }
           }
-  
+
           canvas.width = width;
           canvas.height = height;
           const ctx = canvas.getContext('2d');
           ctx.drawImage(img, 0, 0, width, height);
-  
+
           resolve(canvas.toDataURL('image/jpeg', 0.8)); // Calidad 80%
         };
       };
     });
   };
-  
+
   // Función para manejar la subida de imágenes al chat
   const handleImageUpload = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
-  
+
     const resizedBase64 = await resizeImage(file, 800, 800);
     socket.emit('chat_message', {
       usuario: nick,
       mensaje: resizedBase64.split(',')[1],
       tipo: 'imagen',
     });
-  };   
+  };
 
   return (
     <div className="escritura-boton">
@@ -154,45 +168,56 @@ const EscrituraBoton = ({
           onChange={(e) => setNuevoMensaje(e.target.value)}
           onKeyPress={handleKeyPress}
           ref={inputRef}
-          style={{ fontSize: fontSize, fontFamily: fontFamily }}
+          style={{
+            fontSize: fontSize,
+            fontFamily: fontFamily,
+            padding: isMobile ? '4px 6px' : '6px 10px',
+            height: isMobile ? '30px' : 'auto',
+          }}
         />
+
         <button className="estilos-boton" onClick={enviarMensaje}>
           Enviar
         </button>
         {(
-  <>
-    <select onChange={(e) => setFontSize(e.target.value)} value={fontSize} className="estilos-desplegable">
-      <option value="">Elige tamaño:</option>
-      <option value="12px">12px</option>
-      <option value="14px">14px</option>
-      <option value="16px">16px</option>
-      <option value="18px">18px</option>
-      <option value="20px">20px</option>
-    </select>
-    <select onChange={(e) => setFontFamily(e.target.value)} value={fontFamily} className="estilos-desplegable">
-      <option value="Arial">Elige fuente:</option>
-      <option value="Arial">Arial</option>
-      <option value="Verdana">Verdana</option>
-      <option value="Courier New">Courier New</option>
-      <option value="Georgia">Georgia</option>
-      <option value="Comic Sans MS">Comic Sans MS</option>
-    </select>
-    <input
-      type="file"
-      accept="image/*"
-      onChange={handleImageUpload}
-      style={{ display: 'none' }}
-      id="image-upload"
-    />
-    <label htmlFor="image-upload" className="image-upload">
-      <FontAwesomeIcon icon={faImage} className="icon" />
-    </label>
-    <button className="estilos-grabar" onClick={handleAudioStartStop}>
-      <FontAwesomeIcon icon={faMicrophone} />
-      {recording ? ' Detener' : ' Grabar'}
-    </button>
-  </>
-)}
+          <>
+            <select
+              onChange={(e) => setFontSize(e.target.value)}
+              value={fontSize}
+              className="estilos-desplegable"
+              disabled={isMobile}
+            >
+              <option value="">Elige tamaño:</option>
+              <option value="12px">12px</option>
+              <option value="14px">14px</option>
+              <option value="16px">16px</option>
+              <option value="18px">18px</option>
+              <option value="20px">20px</option>
+            </select>
+            <select onChange={(e) => setFontFamily(e.target.value)} value={fontFamily} className="estilos-desplegable">
+              <option value="Arial">Elige fuente:</option>
+              <option value="Arial">Arial</option>
+              <option value="Verdana">Verdana</option>
+              <option value="Courier New">Courier New</option>
+              <option value="Georgia">Georgia</option>
+              <option value="Comic Sans MS">Comic Sans MS</option>
+            </select>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageUpload}
+              style={{ display: 'none' }}
+              id="image-upload"
+            />
+            <label htmlFor="image-upload" className="image-upload">
+              <FontAwesomeIcon icon={faImage} className="icon" />
+            </label>
+            <button className="estilos-grabar" onClick={handleAudioStartStop}>
+              <FontAwesomeIcon icon={faMicrophone} />
+              {recording ? ' Detener' : ' Grabar'}
+            </button>
+          </>
+        )}
       </div>
 
 

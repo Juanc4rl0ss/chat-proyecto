@@ -120,11 +120,23 @@
   height: 35px;
   font-size: 13px;
   gap: 10px;
-  /* Centrado con Flexbox */
   display: flex;
   align-items: center; 
   justify-content: center;
   text-align: center;
   border: none;
   margin-left: 10px;
+}
+
+@media (max-width: 480px) {
+  .escribir-texto {
+    max-width: 140px; 
+    flex-shrink: 1;
+  }
+
+  .contenedor-fuente {
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+  }
 }
