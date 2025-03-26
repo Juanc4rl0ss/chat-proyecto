@@ -13,10 +13,10 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
-    origin: "http://frontend:8080", 
+    origin: "http://frontend:8080",  // Aquí usas "frontend" en lugar de "localhost" para que Docker resuelva correctamente
     methods: ["GET", "POST"],
     allowedHeaders: ["Content-Type"],
-    credentials: true  
+    credentials: true  // Si estás usando cookies o sesiones
   }
 });
 
@@ -36,8 +36,11 @@ let mensajes = [];
 
 // Evento que se dispara cuando un cliente se conecta al servidor
 io.on("connection", (socket) => {
+  console.log('Nuevo cliente conectado:', socket.id);  // Ver cuando un cliente se conecta
+
   // Envía el historial de mensajes al cliente que se acaba de conectar
   socket.emit("chat_history", mensajes.slice(-15));
+  console.log('Enviando historial de mensajes:', mensajes.slice(-15)); // Ver qué mensajes se envían al cliente
 
   socket.on("new_user", (usuario, callback) => {
     console.log("🔹 Se ha conectado un cliente:", usuario);
@@ -58,8 +61,9 @@ io.on("connection", (socket) => {
         if (resultados.length > 0) {
           usuarioId = resultados[0].id;
           avatar = resultados[0].avatar;
-       
+          console.log(`Usuario ${usuario} encontrado en la base de datos con ID: ${usuarioId} y avatar: ${avatar}`);
         } else {
+          console.log(`Usuario ${usuario} no encontrado en la base de datos.`);
         }
 
         // Verificar si el usuario ya está en la lista
@@ -83,6 +87,7 @@ io.on("connection", (socket) => {
             avatar: user.avatar,
           }))
         );
+        console.log("Lista de usuarios actualizada:", getUsuarios());
 
         socket.emit("chat_message", {
           usuario: "INFO",
@@ -97,6 +102,8 @@ io.on("connection", (socket) => {
 
   // Evento para manejar el envío de mensajes
   socket.on("chat_message", (data) => {
+    console.log('Recibiendo mensaje:', data);  // Ver qué mensaje se recibe
+
     // Agregar el mensaje al historial de mensajes
     mensajes.push(data);
     if (mensajes.length > 100) {
@@ -162,6 +169,7 @@ io.on("connection", (socket) => {
           console.error("Error al guardar el mensaje en la BD:", error);
           return;
         }
+        console.log("Mensaje guardado en la base de datos:", mensaje);  // Confirmación al guardar el mensaje
       }
     );
   }
@@ -196,4 +204,3 @@ io.on("connection", (socket) => {
 server.listen(3000, '0.0.0.0', () => {
   console.log("Servidor escuchando en el puerto 3000");
 });
-

@@ -15,17 +15,22 @@ const UsoDeSockets = (url, colorPalette) => {
 
     const socket = socketRef.current; // Usamos `socketRef.current` para manejar eventos
 
-    socket.on('connect', () => console.log('Connected to server'));
+    socket.on('connect', () => {
+      console.log('Connected to server'); // ✅ Verifica si la conexión WebSocket fue exitosa
+    });
 
     socket.on('chat_message', (data) => {
+      console.log('Mensaje recibido:', data); // ✅ Muestra el mensaje recibido del servidor
       setMensajes((prevMensajes) => [...prevMensajes, data]);
     });
 
     socket.on('chat_history', (history) => {
+      console.log('Historial de chat recibido:', history); // ✅ Verifica el historial de mensajes recibido
       setMensajes(history);
     });
 
     socket.on('user_list', (userList) => {
+      console.log('Lista de usuarios recibida:', userList); // ✅ Muestra la lista de usuarios recibida
       const newColors = {};
       userList.forEach(user => {
         if (!userColors[user]) {
@@ -39,6 +44,7 @@ const UsoDeSockets = (url, colorPalette) => {
     // ✅ Cleanup: Desconectar el socket completamente al desmontar el componente
     return () => {
       if (socketRef.current) {
+        console.log('Desconectando socket'); // ✅ Muestra cuando se desconecta el socket
         socketRef.current.disconnect();
         socketRef.current = null;
       }
@@ -48,6 +54,7 @@ const UsoDeSockets = (url, colorPalette) => {
   // ✅ Función para enviar un mensaje
   const enviarMensaje = (nick, nuevoMensaje) => {
     if (!nuevoMensaje.trim()) return;
+    console.log('Enviando mensaje:', nuevoMensaje); // ✅ Muestra el mensaje que se está enviando
     socketRef.current?.emit('chat_message', {
       usuario: nick,
       mensaje: nuevoMensaje,
@@ -62,9 +69,11 @@ const UsoDeSockets = (url, colorPalette) => {
         return;
     }
 
+    console.log('Enviando nuevo nombre de usuario:', tempNick); // ✅ Muestra el nickname que se está enviando al backend
     socketRef.current?.emit('new_user', tempNick, (response) => {
         if (response?.error) {
             setErrorNick(response.error);
+            console.log('Error al registrar usuario:', response.error); // ✅ Muestra el error si no se puede registrar el usuario
         } else {
             setNick(tempNick);
             setAvatar(response.avatar || null); // ✅ Guarda el avatar
@@ -73,11 +82,10 @@ const UsoDeSockets = (url, colorPalette) => {
     });
 };
 
-
-
   // ✅ Función para desconectar el socket
   const desconectarSocket = () => {
     if (socketRef.current) {
+      console.log('Desconectando el socket y limpiando estado'); // ✅ Muestra cuando se desconecta el socket
       socketRef.current.emit('Usuario desconectado');
       socketRef.current.disconnect();
       socketRef.current = null; // ✅ Se limpia la referencia
@@ -89,6 +97,7 @@ const UsoDeSockets = (url, colorPalette) => {
   // ✅ Función para reconectar el socket
   const conectarSocket = () => {
     if (!socketRef.current || !socketRef.current.connected) {
+      console.log('Reconectando socket'); // ✅ Muestra cuando se está intentando reconectar el socket
       socketRef.current = io(url);
     }
   };
