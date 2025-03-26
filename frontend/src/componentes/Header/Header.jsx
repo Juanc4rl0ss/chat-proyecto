@@ -1,117 +1,34 @@
-import './App.css';
-import { useState, useRef, useEffect } from 'react';
-import { BrowserRouter as Router } from 'react-router-dom';
-import NicknameModal from './componentes/NickModal/NickModal';
-import EscrituraBoton from './componentes/SalaChat/ChatControls/EscrituraBoton';
-import MensajeList from './componentes/SalaChat/ChatDisplay/MensajeList';
-import UsoDeSockets from './componentes/Sockets/UsoDeSockets';
-import Header from './componentes/Header/Header';
-import Modal from 'react-modal';
-import io from 'socket.io-client';
+import React from 'react';
+import './Header.css';
 
-Modal.setAppElement('#root');
-
-const socket = io('http://backend:3000'); 
-const url = 'http://backend:3000';
-
-const colorPalette = [
-  '#1F77B4', '#FF7F0E', '#2CA02C', '#D62728', '#9467BD',
-  '#8C564B', '#E377C2', '#7F7F7F', '#BCBD22', '#17BECF'
-];
-
-function App() {
-  const [fontSize, setFontSize] = useState('16px');
-  const [nuevoMensaje, setNuevoMensaje] = useState('');
-  const [nick, setNick] = useState('');
-  const [avatar, setAvatar] = useState('');
-  const [modalIsOpen, setModalIsOpen] = useState(true);
-  const [fontFamily, setFontFamily] = useState('Arial');
-  const [showIconPicker, setShowIconPicker] = useState(false);
-  const mensajesRef = useRef(null);
-  const inputRef = useRef(null);
-
-  // Llamamos al hook UsoDeSockets y guardamos el resultado en la variable socketData.
-  const socketData = UsoDeSockets(url, colorPalette);
-
-  // Desestructuramos socketData para obtener los valores individuales.
-  const { mensajes, enviarMensaje, usuarios, userColors, handleSubmitNick, desconectarSocket, conectarSocket } = socketData;
-
-  //Función para enviar un mensaje
-  const enviarMensajeWrapper = () => {
-    console.log("Enviando mensaje:", nuevoMensaje);  // Muestra el mensaje que se está enviando
-    enviarMensaje(nick, nuevoMensaje);
-    setNuevoMensaje('');
+const Header = ({ nick, avatar, modalIsOpen, setModalIsOpen, desconectarSocket }) => {
+  const handleLogout = () => {
+    // Desconectar el socket y recargar la página
+    window.location.reload();
   };
 
-  // Con esto conseguimos que se enfoque el input de escritura tras cerrar el modal
-  useEffect(() => {
-    if (!modalIsOpen && inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [modalIsOpen]);
-
-  // Mostramos el historial de mensajes cuando se recibe
-  useEffect(() => {
-    console.log("Historial de mensajes recibido:", mensajes);  // Muestra el historial de mensajes
-  }, [mensajes]);
-
-  // Verificamos los usuarios que están conectados
-  useEffect(() => {
-    console.log("Lista de usuarios:", usuarios);  // Muestra la lista de usuarios conectados
-  }, [usuarios]);
-
-  // Mostrar cuando se conecte al backend via WebSocket
-  useEffect(() => {
-    socket.on('connect', () => {
-      console.log('Conectado al backend via WebSocket');  // Indica que la conexión WebSocket fue exitosa
-    });
-
-    return () => {
-      socket.off('connect');
-    };
-  }, []);
-
   return (
-    <Router>
-      <main className="App">
-        <Header nick={nick} avatar={avatar} modalIsOpen={modalIsOpen} setModalIsOpen={setModalIsOpen} desconectarSocket={desconectarSocket} conectarSocket={conectarSocket} />
-
-        <NicknameModal
-          isOpen={modalIsOpen}
-          onSubmit={(tempNick, setErrorNick) => {
-            console.log("Enviando nickname al servidor:", tempNick);  // Muestra el nickname que se está enviando
-            handleSubmitNick(tempNick, setNick, setAvatar, setErrorNick, setModalIsOpen);
-          }}
-        />
-
-        <MensajeList
-          mensajes={mensajes}
-          userColors={userColors}
-          colorPalette={colorPalette}
-          fontSize={fontSize}
-          fontFamily={fontFamily}
-          nick={nick}
-          mensajesRef={mensajesRef}
-          usuarios={usuarios}
-        />
-
-        <EscrituraBoton
-          showIconPicker={showIconPicker}
-          setShowIconPicker={setShowIconPicker}
-          nuevoMensaje={nuevoMensaje}
-          setNuevoMensaje={setNuevoMensaje}
-          enviarMensaje={enviarMensajeWrapper}
-          fontSize={fontSize}
-          setFontSize={setFontSize}
-          fontFamily={fontFamily}
-          setFontFamily={setFontFamily}
-          nick={nick}
-          inputRef={inputRef}
-          socket={socket}
-        />
-      </main>
-    </Router>
+    <header className="chat-header">
+      <h1>Bienvenido/a al Chat</h1>
+      {nick && !modalIsOpen && (
+        <div className="user-info">
+          {/* Mostrar imagen si existe, sino mostrar ícono por defecto */}
+          
+          {avatar ? (
+            
+            <img src={avatar} alt="Avatar" className="user-avatar" />
+          ) : (
+            <span className="user-avatar-placeholder">👤</span>
+          )}
+          
+          <span className="user-name">{nick}</span>
+          <button className="logout-button" onClick={handleLogout}>
+            Salir
+          </button>
+        </div>
+      )}
+    </header>
   );
-}
+};
 
-export default App;
+export default Header;
