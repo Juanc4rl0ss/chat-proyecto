@@ -95,6 +95,12 @@ io.on("connection", (socket) => {
           tipo: "bienvenida",
         });
 
+        socket.broadcast.emit("chat_message", {
+          usuario: "INFO",
+          mensaje: `${usuario} se ha unido al chat.`,
+          tipo: "info",
+        });        
+
         callback({ id: usuarioId, nombre: usuario, avatar });
       }
     );
