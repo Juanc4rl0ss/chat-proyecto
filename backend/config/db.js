@@ -23,15 +23,7 @@ function conectar() {
           console.log('max_allowed_packet (global) aumentado a 64MB');
         }
       });
-
-      // Intentar aumentar el límite para la sesión actual
-      conexion.query('SET SESSION max_allowed_packet=67108864', (err) => {
-        if (err) {
-          console.warn('No se pudo aumentar max_allowed_packet (session):', err.message);
-        } else {
-          console.log('max_allowed_packet (session) aumentado a 64MB');
-        }
-      });
+     
     }
   });
 }
