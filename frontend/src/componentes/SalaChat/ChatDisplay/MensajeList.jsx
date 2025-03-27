@@ -104,7 +104,7 @@ const MensajeList = ({
                 </div>
                 <div className="mensaje-texto">
                   {mensaje.tipo === "audio" ? (
-                    <audio controls style={{ width: "250px", height: "30px" }}>
+                    <audio controls style={{ width: "180px", height: "30px" }}>
                     <source
                         src={`data:audio/webm;base64,${mensaje.mensaje}`}
                         type="audio/webm"
