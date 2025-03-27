@@ -44,6 +44,7 @@ const EscrituraBoton = ({
       inputRef.current.focus();
     }
   }, [nick]);
+  
 
   // Función para enviar el mensaje al servidor
   const handleKeyPress = (event) => {
@@ -181,19 +182,21 @@ const EscrituraBoton = ({
         </button>
         {(
           <>
-            <select
-              onChange={(e) => setFontSize(e.target.value)}
-              value={fontSize}
-              className="estilos-desplegable"
-              disabled={isMobile}
-            >
-              <option value="">Elige tamaño:</option>
-              <option value="12px">12px</option>
-              <option value="14px">14px</option>
-              <option value="16px">16px</option>
-              <option value="18px">18px</option>
-              <option value="20px">20px</option>
-            </select>
+            {!isMobile && (
+              <select
+                onChange={(e) => setFontSize(e.target.value)}
+                value={fontSize}
+                className="estilos-desplegable"
+              >
+                <option value="">Elige tamaño:</option>
+                <option value="12px">12px</option>
+                <option value="14px">14px</option>
+                <option value="16px">16px</option>
+                <option value="18px">18px</option>
+                <option value="20px">20px</option>
+              </select>
+            )}
+
             <select onChange={(e) => setFontFamily(e.target.value)} value={fontFamily} className="estilos-desplegable">
               <option value="Arial">Elige fuente:</option>
               <option value="Arial">Arial</option>
