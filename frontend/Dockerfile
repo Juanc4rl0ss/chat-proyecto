@@ -4,6 +4,7 @@ FROM node:18 AS build
 WORKDIR /app
 COPY package*.json ./
 COPY vite.config.* ./
+COPY .env.production .env
 RUN npm install
 COPY . .                 
 RUN npm run build        

@@ -11,8 +11,11 @@ import io from 'socket.io-client';
 
 Modal.setAppElement('#root');
 
-const socket = io('http://localhost:3000');
-const url = 'http://localhost:3000';
+// Creamos una instancia de socket.io-client y la guardamos en la variable socket.
+const socket = io(import.meta.env.VITE_SOCKET_URL);
+
+// Obtenemos la URL del servidor de sockets desde el archivo .env
+const url = import.meta.env.VITE_SOCKET_URL; 
 
 const colorPalette = [
   '#1F77B4', '#FF7F0E', '#2CA02C', '#D62728', '#9467BD',

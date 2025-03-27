@@ -67,11 +67,10 @@ const MensajeList = ({
           return (
             <li
               key={index}
-              className={`li-mensaje ${
-                mensaje.usuario === nick || mensaje.tipo === "bienvenida"
+              className={`li-mensaje ${mensaje.usuario === nick || mensaje.tipo === "bienvenida"
                   ? "own"
                   : ""
-              }`}
+                }`}
               style={{ fontSize: fontSize, fontFamily: fontFamily }}
             >
               <div style={{ display: "flex", alignItems: "center" }}>
@@ -85,15 +84,28 @@ const MensajeList = ({
                       style={{ borderRadius: "50%", marginRight: "10px" }}
                     />
                   ) : (
-                    <span style={{ marginRight: "10px" }}>👤</span>
+                    <span
+                      style={{
+                        display: "inline-block",
+                        width: "30px",
+                        height: "30px",
+                        fontSize: "20px",
+                        lineHeight: "30px",
+                        textAlign: "center",
+                        marginRight: "10px",
+                      }}
+                    >
+                      👤
+                    </span>
                   ))}
+
                 <div className="mensaje-nombre" style={{ color: userColor }}>
                   {mensaje.usuario}:
                 </div>
                 <div className="mensaje-texto">
                   {mensaje.tipo === "audio" ? (
-                    <audio controls>
-                      <source
+                    <audio controls style={{ width: "250px", height: "30px" }}>
+                    <source
                         src={`data:audio/webm;base64,${mensaje.mensaje}`}
                         type="audio/webm"
                       />
