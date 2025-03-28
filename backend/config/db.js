@@ -20,7 +20,6 @@ function conectar() {
         if (err) {
           console.warn('No se pudo aumentar max_allowed_packet (global):', err.message);
         } else {
-          console.log('max_allowed_packet (global) aumentado a 64MB');
         }
       });
      

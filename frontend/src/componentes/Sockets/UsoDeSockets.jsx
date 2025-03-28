@@ -3,14 +3,14 @@ import io from 'socket.io-client';
 
 // Hook personalizado para manejar la conexión con el servidor de sockets
 const UsoDeSockets = (url, colorPalette) => {
-  const socketRef = useRef(null); // ✅ Usamos `useRef` para evitar múltiples re-renderizados
+  const socketRef = useRef(null);
   const [mensajes, setMensajes] = useState([]);
   const [usuarios, setUsuarios] = useState([]);
   const [userColors, setUserColors] = useState({});
 
   useEffect(() => {
     if (!socketRef.current) {
-      socketRef.current = io(url); // ✅ Se inicializa solo una vez
+      socketRef.current = io(url);
     }
 
     const socket = socketRef.current; // Usamos `socketRef.current` para manejar eventos
@@ -36,16 +36,16 @@ const UsoDeSockets = (url, colorPalette) => {
       setUsuarios(userList);
     });
 
-    // ✅ Cleanup: Desconectar el socket completamente al desmontar el componente
+    // Cleanup: Desconectar el socket completamente al desmontar el componente
     return () => {
       if (socketRef.current) {
         socketRef.current.disconnect();
         socketRef.current = null;
       }
     };
-  }, [url, colorPalette]); // ✅ Solo se ejecuta cuando cambia `url` o `colorPalette`
+  }, [url, colorPalette]); // Solo se ejecuta cuando cambia `url` o `colorPalette`
 
-  // ✅ Función para enviar un mensaje
+  // Función para enviar un mensaje
   const enviarMensaje = (nick, nuevoMensaje) => {
     if (!nuevoMensaje.trim()) return;
     socketRef.current?.emit('chat_message', {
@@ -55,7 +55,7 @@ const UsoDeSockets = (url, colorPalette) => {
     });
   };
 
-  // ✅ Función para enviar el nombre de usuario
+  // Función para enviar el nombre de usuario
   const handleSubmitNick = (tempNick, setNick, setAvatar, setErrorNick, setModalIsOpen) => {
     if (!tempNick) {
         setErrorNick('El nombre no puede estar vacío');
@@ -67,7 +67,7 @@ const UsoDeSockets = (url, colorPalette) => {
             setErrorNick(response.error);
         } else {
             setNick(tempNick);
-            setAvatar(response.avatar || null); // ✅ Guarda el avatar
+            setAvatar(response.avatar || null);
             setModalIsOpen(false);
         }
     });
@@ -75,18 +75,18 @@ const UsoDeSockets = (url, colorPalette) => {
 
 
 
-  // ✅ Función para desconectar el socket
+  // Función para desconectar el socket
   const desconectarSocket = () => {
     if (socketRef.current) {
       socketRef.current.emit('Usuario desconectado');
       socketRef.current.disconnect();
-      socketRef.current = null; // ✅ Se limpia la referencia
+      socketRef.current = null;
       setUsuarios([]);
       setMensajes([]);
     }
   };
 
-  // ✅ Función para reconectar el socket
+  // Función para reconectar el socket
   const conectarSocket = () => {
     if (!socketRef.current || !socketRef.current.connected) {
       socketRef.current = io(url);

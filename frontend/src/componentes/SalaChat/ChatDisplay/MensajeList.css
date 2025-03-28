@@ -97,7 +97,7 @@
 .mensaje-texto {
   white-space: pre-wrap;
   overflow-wrap: break-word;
-  word-break: break-word; /* 👈 Este es el que soluciona lo de palabras sin espacios */
+  word-break: break-word;
   text-align: left;
 }
 

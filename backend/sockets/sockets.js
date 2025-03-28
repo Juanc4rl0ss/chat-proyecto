@@ -40,7 +40,6 @@ io.on("connection", (socket) => {
 
   // Envía el historial de mensajes al cliente que se acaba de conectar
   socket.emit("chat_history", mensajes.slice(-15));
-  console.log('Enviando historial de mensajes:', mensajes.slice(-15)); // Ver qué mensajes se envían al cliente
 
   socket.on("new_user", (usuario, callback) => {
     console.log("🔹 Se ha conectado un cliente:", usuario);
@@ -61,7 +60,6 @@ io.on("connection", (socket) => {
         if (resultados.length > 0) {
           usuarioId = resultados[0].id;
           avatar = resultados[0].avatar;
-          console.log(`Usuario ${usuario} encontrado en la base de datos con ID: ${usuarioId} y avatar: ${avatar}`);
         } else {
           console.log(`Usuario ${usuario} no encontrado en la base de datos.`);
         }
@@ -87,7 +85,6 @@ io.on("connection", (socket) => {
             avatar: user.avatar,
           }))
         );
-        console.log("Lista de usuarios actualizada:", getUsuarios());
 
         socket.emit("chat_message", {
           usuario: "INFO",
@@ -108,7 +105,6 @@ io.on("connection", (socket) => {
 
   // Evento para manejar el envío de mensajes
   socket.on("chat_message", (data) => {
-    console.log('Recibiendo mensaje:', data);  // Ver qué mensaje se recibe
 
     // Agregar el mensaje al historial de mensajes
     mensajes.push(data);
@@ -170,12 +166,11 @@ io.on("connection", (socket) => {
     db.query(
       "INSERT INTO historial (usuario_id, nickname, mensaje) VALUES (?, ?, ?)",
       [usuarioId, nickname, mensaje],
-      (error, resultados) => {
+      (error) => {
         if (error) {
           console.error("Error al guardar el mensaje en la BD:", error);
           return;
         }
-        console.log("Mensaje guardado en la base de datos:", mensaje);  // Confirmación al guardar el mensaje
       }
     );
   }

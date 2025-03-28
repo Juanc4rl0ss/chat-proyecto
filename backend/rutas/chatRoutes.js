@@ -56,8 +56,6 @@ router.post('/registrar', (req, res) => {
 router.post('/iniciar-sesion', (req, res) => {
     const { nickname, contraseña } = req.body;
 
-    console.log('Datos de inicio de sesión recibidos:', req.body);
-
     if (!nickname || !contraseña) {
         return res.status(400).json({ error: 'Todos los campos son obligatorios' });
     }

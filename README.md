@@ -1,3 +1,4 @@
+
 # 💬 Chat Proyecto - DAW
 
 Proyecto final de Desarrollo de Aplicaciones Web (DAW): una aplicación de chat en tiempo real desarrollada con **React**, **Node.js** y **MySQL**, con soporte para Docker.
@@ -79,7 +80,7 @@ Abrí `http://localhost:5173` en tu navegador.
 
 Esta opción levanta **frontend, backend y MySQL** automáticamente.
 
-### ▶️ Comando para iniciar:
+### ▶️ Comando para iniciar en la carpeta raiz:
 
 ```bash
 docker compose up --build
@@ -91,6 +92,12 @@ docker compose up --build
 Cuando todo esté levantado:
 
 - Frontend: `http://localhost:8080`
+
+---
+
+## ⚙️ Uso en Producción
+
+Si querés usar este proyecto en producción, tenés que actualizar el archivo `.env` con la IP de tu servidor.
 
 ---
 
